@@ -1,3 +1,6 @@
+GRUPO := 1
+NOMBRE_TAREA := tarea_1_algoritmos
+
 CC := gcc
 CFLAGS := -Wall -Wextra -Werror -std=c11 -Iinclude
 LDFLAGS :=
@@ -35,7 +38,7 @@ clean:
 	rm -rf $(OBJ_DIR) $(BUILD_DIR)/*
 
 send: all
-	tar -czvf programa.tar.gz $(SRC_DIR) $(INC_DIR) Makefile
+	tar -czvf $(NOMBRE_TAREA)_G$(GRUPO).tar.gz $(SRC_DIR) $(INC_DIR) Makefile
 
 plot:
 	@echo "Generando gráficos..." && gnuplot plot.gp
