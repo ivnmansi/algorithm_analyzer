@@ -4,6 +4,7 @@
  * 
  */
 #include "linked_list.h"
+#include <stdio.h>
 
 /**
  * @brief Crea una lista doblemente enlazada circular
@@ -92,7 +93,7 @@ void deleteNode(Node node){
     Node prevNode = node->prev;
     prevNode->next = node->next;
     node->next->prev = prevNode;
-    free(node->data);
+    deleteDeportista(node->data);
     free(node);
 }
 
@@ -117,12 +118,32 @@ void deleteList(LinkedList linkedList){
     while(currentNode != firstNode){
         Node nodeToDelete = currentNode;
         currentNode = currentNode->next;
-        free(nodeToDelete->data);
+        deleteDeportista(nodeToDelete->data);
         free(nodeToDelete);
     }
 
-    free(firstNode->data);
+    deleteDeportista(firstNode->data);
     free(firstNode);
 
     free(linkedList);
+}
+
+void printList(LinkedList linkedList){
+    if(linkedList == NULL || linkedList->firstNode == NULL){
+        return;
+    }
+
+    Node currentNode = linkedList->firstNode;
+    
+    do {
+        printf("ID: %d | Nombre: %s | Equipo: %s | Puntaje: %.2f | Competencias: %d\n",
+            currentNode->data->id,
+            currentNode->data->nombre,
+            currentNode->data->equipo,
+            currentNode->data->puntaje,
+            currentNode->data->competencias);
+        currentNode = currentNode->next;
+    }
+    while(currentNode != linkedList->firstNode);
+
 }

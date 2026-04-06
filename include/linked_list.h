@@ -34,4 +34,6 @@ void deleteNode(Node node);
 
 void deleteList(LinkedList linkedList);
 
+void printList(LinkedList linkedList);
+
 #endif

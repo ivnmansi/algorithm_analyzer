@@ -5,6 +5,8 @@
  */
 
 #include "base.h"
+#include "linked_list.h"
+#include "csv.h"
 
 int main(int argc, char **argv) {
 
@@ -20,8 +22,18 @@ int main(int argc, char **argv) {
                 printf("generar %d datos", atoi(optarg));
                 break;
             case 't':
-                printf("hacer test");
+            {
+                LinkedList linkedList = createEmptyList();
+                if(linkedList == NULL){
+                    printf("No se pudo crear la lista.\n");
+                    return 1;
+                }
+
+                loadDeportistasCSV(linkedList);
+                printList(linkedList);
+                deleteList(linkedList);
                 break;
+            }
             case '?':
                 printf("Opción desconocida: -%c\n", optopt);
                 return 1;
