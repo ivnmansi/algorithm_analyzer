@@ -23,15 +23,7 @@ int main(int argc, char **argv) {
                 break;
             case 't':
             {
-                LinkedList linkedList = createEmptyList();
-                if(linkedList == NULL){
-                    printf("No se pudo crear la lista.\n");
-                    return 1;
-                }
-
-                loadDeportistasCSV(linkedList);
-                printList(linkedList);
-                deleteList(linkedList);
+                runExperiment();
                 break;
             }
             case '?':

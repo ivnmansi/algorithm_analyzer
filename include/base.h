@@ -13,6 +13,9 @@
 #include <unistd.h>
 #include <getopt.h>
 
+#include "linked_list.h"
+
+void runExperiment();
 
 
 

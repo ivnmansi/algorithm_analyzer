@@ -1,6 +1,8 @@
 #include "csv.h"
 
-void createDeportistasCSV(LinkedList linkedList);
+void createDeportistasCSV(LinkedList linkedList){
+    
+}
 
 static char* duplicateString(const char* src){
     size_t len = strlen(src);
