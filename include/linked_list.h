@@ -1,7 +1,7 @@
 /**
  * @file linked_list.h
  * @brief Lista doblemente enlazada circular
- * 
+ *
  */
 
 #ifndef LINKED_LIST_H

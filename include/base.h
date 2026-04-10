@@ -1,7 +1,7 @@
 /**
  * @file base.h
- * @brief 
- * 
+ * @brief
+ *
  */
 
 #ifndef BASE_H
@@ -12,8 +12,19 @@
 #include <time.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <string.h>
 
 #include "linked_list.h"
+
+#define NAMES_LENGHT 3
+#define MAX_DATA 100000
+#define MIN_DATA 10
+#define MAX_SCORE 100.0
+#define MIN_SCORE 0.0
+#define MAX_COMPETITIONS 45
+#define MIN_COMPETITIONS 1
+#define CSV_ROUTE "../output/deportistas.csv"
+
 
 void runExperiment();
 

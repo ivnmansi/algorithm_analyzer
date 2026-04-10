@@ -41,5 +41,5 @@ send: all
 	tar -czvf $(NOMBRE_TAREA)_G$(GRUPO).tar.gz $(SRC_DIR) $(INC_DIR) Makefile
 
 plot:
-	@echo "Generando gráficos..." && gnuplot plot.gp
-	
+	@echo "Generando gráficos..." && gnuplot ./plots/plot.gp
+

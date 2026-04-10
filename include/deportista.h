@@ -1,7 +1,7 @@
 /**
  * @file deportista.h
- * @brief 
- * 
+ * @brief
+ *
  */
 
 #ifndef DEPORTISTA_H
@@ -10,11 +10,11 @@
 #include <stdlib.h>
 
 typedef struct {
-    int id;
-    char* nombre;
-    char* equipo;
-    float puntaje;
-    int competencias;
+    int ID;
+    char* Nombre;
+    char* Equipo;
+    float Puntaje;
+    int Competencias;
 } Deportista_;
 
 typedef Deportista_* Deportista;

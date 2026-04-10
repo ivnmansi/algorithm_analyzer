@@ -7,9 +7,9 @@
 #include <string.h>
 #include "linked_list.h"
 
-#define CSV_NAME "db/test.csv"
 
-void createDeportistasCSV(LinkedList linkedList);
+
+void createDeportistasCSV(int cantidadDatos);
 void loadDeportistasCSV(LinkedList linkedList);
 
 

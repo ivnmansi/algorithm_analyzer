@@ -1,10 +1,12 @@
 /**
  * @file deportista.c
- * @brief 
- * 
+ * @brief
+ *
  */
 
 #include "deportista.h"
+
+
 
 Deportista createDeportista(int id, char* nombre, char* equipo, float puntaje, int competencias){
     Deportista newDeportista = malloc(sizeof(Deportista_));

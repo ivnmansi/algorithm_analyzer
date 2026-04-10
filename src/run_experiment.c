@@ -2,6 +2,7 @@
 
 void runExperiment(){
     LinkedList linkedList = createEmptyList();
+
     if(linkedList == NULL){
         printf("No se pudo crear la lista.\n");
         return;
@@ -11,3 +12,4 @@ void runExperiment(){
     printList(linkedList);
     deleteList(linkedList);
 }
+

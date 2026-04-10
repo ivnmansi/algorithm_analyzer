@@ -1,7 +1,27 @@
 #include "csv.h"
+#include "base.h"
+#include "generator.h"
 
-void createDeportistasCSV(LinkedList linkedList){
-    
+void createDeportistasCSV(int cantidadDatos){
+    FILE* f = fopen(CSV_ROUTE,"w");
+    if(f == NULL){
+        printf("No se pudo crear el archivo.\n");
+        return;
+    }
+    fprintf(f, "ID,Nombre,Equipo,Puntaje,Competencias\n");
+    for(int i = 0; i < cantidadDatos; i++){
+        int id = i;
+        char* nombre = generate_random_name();
+        char* equipo = generate_random_team();
+        float puntaje = generate_random_score();
+        int competencias = generate_random_competitions();
+        fprintf(f, "%d,%s,%s,%.2f,%d\n", id, nombre, equipo, puntaje, competencias);
+        free(nombre);
+        free(equipo);
+    }
+
+    printf("Archivo CSV creado con éxito.\n");
+    fclose(f);
 }
 
 static char* duplicateString(const char* src){
@@ -19,7 +39,7 @@ void loadDeportistasCSV(LinkedList linkedList){
         return;
     }
 
-    FILE* f = fopen(CSV_NAME,"r");
+    FILE* f = fopen(CSV_ROUTE,"r");
     if(f == NULL){
         return;
     }
