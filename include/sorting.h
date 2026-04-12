@@ -1,7 +1,8 @@
 /**
  * @file sorting.h
- * @brief Funciones de ordenamiento
+ * @brief Ordenamiento para deportistas.
  */
+
 #ifndef SORTING_H
 #define SORTING_H
 #include "deportista.h"
@@ -17,5 +18,7 @@ typedef enum {
 void cocktail_shaker_sort_desc(Deportista* array, int n, SortCriteria criteria);
 
 void swap_deportistas(Deportista* a, Deportista* b);
+
+void insertion_sort_deportistas(Deportista *deportistas, int length, int field, int descending);
 
 #endif

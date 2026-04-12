@@ -14,7 +14,9 @@
 #include <getopt.h>
 #include <string.h>
 
-#include "linked_list.h"
+#include "csv.h"
+#include "searching.h"
+#include "sorting.h"
 
 #define NAMES_LENGHT 3
 #define MAX_DATA 100000
@@ -23,10 +25,13 @@
 #define MIN_SCORE 0.0
 #define MAX_COMPETITIONS 45
 #define MIN_COMPETITIONS 1
-#define CSV_ROUTE "../output/deportistas.csv"
+#define CSV_ROUTE "output/deportistas.csv"
 
 
 void runExperiment();
+void search_by_id(int targetId);
+void show_ranking(int rankingAmount);
+void print_help(const char *programName);
 
 
 
