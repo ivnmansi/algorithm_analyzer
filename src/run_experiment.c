@@ -216,8 +216,22 @@ void search_by_id(int targetId)
             freeDeportistasArray(deportistas, count);
             break;
         case BINARY_SEARCH:
-            // Aqui va Busqueda Binaria
-            printf("Aun no esta implementado\n");
+            if(load_data(&deportistas, &count) == 0){
+                return;
+            }
+
+            // Requisito para busqueda binaria: arreglo ordenado por ID ascendente
+            insertion_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING);
+
+            index = iterative_binary_search_by_id(deportistas, count, targetId);
+            if(index < 0){
+                freeDeportistasArray(deportistas, count);
+                printf("No se encontro un deportista con ID %d\n", targetId);
+                return;
+            }
+
+            print_deportista(deportistas[index]);
+            freeDeportistasArray(deportistas, count);
             break;
         default:
             printf("Aun no esta implementado\n");
