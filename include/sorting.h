@@ -40,8 +40,8 @@ typedef enum {
 int compare_by_criteria(Deportista left, Deportista right, SortCriteria criteria);
 
 void cocktail_shaker_sort(Deportista* deportistas, int lenght, SortCriteria criteria, SortOrder order);
-
 void insertion_sort_deportistas(Deportista *deportistas, int length, SortCriteria criteria, SortOrder order);
 void optimized_bubble_sort(Deportista *deportistas, int length, SortCriteria criteria, SortOrder order);
+void selection_sort(Deportista *deportistas, int length, SortCriteria criteria, SortOrder order);
 
 #endif

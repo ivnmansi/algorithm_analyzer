@@ -7,13 +7,11 @@
 #include "csv.h"
 #include "sorting.h"
 #include "print_format.h"
+#include <stdio.h>
 
 
-void printDeportistasArray(Deportista *deportistas, int rankingAmount, SortOrder order){
+void printDeportistasArray(Deportista *deportistas, int rankingAmount){
     for(int i = 0; i < rankingAmount; i++){
-        if(order != 0){
-            printf("%d. ", i + 1);
-        }
         print_deportista(deportistas[i]);
     }
 }
@@ -137,7 +135,7 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
                 rankingAmount = count;
             }
 
-            printDeportistasArray(deportistas, rankingAmount, order);
+            printDeportistasArray(deportistas, rankingAmount);
 
             freeDeportistasArray(deportistas, count);
             break;
@@ -149,13 +147,23 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
             if(rankingAmount > count){
                 rankingAmount = count;
             }
-            printDeportistasArray(deportistas, rankingAmount, order);
+            printDeportistasArray(deportistas, rankingAmount);
 
             freeDeportistasArray(deportistas, count);
             break;
         case SELECTION_SORT:
-            // Aqui va selection sort optimizado
-            printf("Aun no esta implementado\n");
+            if(load_data(&deportistas, &count) == 0){
+                return;
+            }
+
+            selection_sort(deportistas, count, criteria, order);
+
+            if(rankingAmount > count){
+                rankingAmount = count;
+            }
+
+            printDeportistasArray(deportistas, rankingAmount);
+            freeDeportistasArray(deportistas, count);
             break;
         case COCKTAIL_SHAKER_SORT:
             if(load_data(&deportistas, &count) == 0){
@@ -166,7 +174,7 @@ static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrd
                 rankingAmount = count;
             }
 
-            printDeportistasArray(deportistas, rankingAmount, order);
+            printDeportistasArray(deportistas, rankingAmount);
 
             freeDeportistasArray(deportistas, count);
             break;
