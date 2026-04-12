@@ -63,22 +63,30 @@ static int should_swap(Deportista left, Deportista right, SortCriteria criteria,
     return cmp < 0; // DESCENDING, Si left < right, entonces se debe intercambiar
 }
 
-void cocktail_shaker_sort(Deportista* array, int n, SortCriteria criteria, SortOrder order)
+/**
+ * @brief Ordena un arreglo de deportistas utilizando el algoritmo cocktail shaker sort según un criterio y orden de ordenamiento.
+ *
+ * @param deportistas Arreglo de deportistas a ordenar.
+ * @param lenght Largo del arreglo de deportistas.
+ * @param criteria Criterio a utilizar para la comparacion.
+ * @param order Sentido de ordenamiento (ascendente o descendente).
+ */
+void cocktail_shaker_sort(Deportista* deportistas, int lenght, SortCriteria criteria, SortOrder order)
 {
-    if(array == NULL || n < 2){
+    if(deportistas == NULL || lenght < 2){
         return;
     }
 
     int left = 0;
-    int right = n - 1;
+    int right = lenght - 1;
     int swapped = 1;
 
     while(swapped){
         swapped = 0;
 
         for(int i = left; i < right; i++){
-            if(should_swap(array[i], array[i + 1], criteria, order)){
-                swap_deportistas(&array[i], &array[i + 1]);
+            if(should_swap(deportistas[i], deportistas[i + 1], criteria, order)){
+                swap_deportistas(&deportistas[i], &deportistas[i + 1]);
                 swapped = 1;
             }
         }
@@ -91,8 +99,8 @@ void cocktail_shaker_sort(Deportista* array, int n, SortCriteria criteria, SortO
         swapped = 0;
 
         for(int i = right; i > left; i--){
-            if(should_swap(array[i - 1], array[i], criteria, order)){
-                swap_deportistas(&array[i - 1], &array[i]);
+            if(should_swap(deportistas[i - 1], deportistas[i], criteria, order)){
+                swap_deportistas(&deportistas[i - 1], &deportistas[i]);
                 swapped = 1;
             }
         }
