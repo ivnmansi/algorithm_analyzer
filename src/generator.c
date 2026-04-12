@@ -65,3 +65,25 @@ int generate_random_competitions(){
     int randomCompetitions = (rand() % (MAX_COMPETITIONS - MIN_COMPETITIONS + 1)) + MIN_COMPETITIONS;
     return randomCompetitions;
 }
+
+/**
+ * @brief Mezcla un arreglo de enteros usando Fisher-Yates.
+ *
+ * @param values Arreglo a mezclar.
+ * @param length Cantidad de elementos.
+ */
+void fisher_yates_shuffle(int *values, int length)
+{
+    int i, j, temp;
+
+    if(values == NULL){
+        return;
+    }
+
+    for(i = length - 1; i > 0; i--){
+        j = rand() % (i + 1);
+        temp = values[i];
+        values[i] = values[j];
+        values[j] = temp;
+    }
+}

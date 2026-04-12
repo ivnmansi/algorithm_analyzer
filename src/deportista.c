@@ -13,17 +13,17 @@ Deportista createDeportista(int id, char* nombre, char* equipo, float puntaje, i
     if(newDeportista == NULL){
         return NULL;
     }
-    newDeportista->id = id;
-    newDeportista->nombre = nombre;
-    newDeportista->equipo = equipo;
-    newDeportista->puntaje = puntaje;
-    newDeportista->competencias = competencias;
+    newDeportista->ID = id;
+    newDeportista->Nombre = nombre;
+    newDeportista->Equipo = equipo;
+    newDeportista->Puntaje = puntaje;
+    newDeportista->Competencias = competencias;
 
     return newDeportista;
 }
 
 void deleteDeportista(Deportista deportista){
-    free(deportista->nombre);
-    free(deportista->equipo);
+    free(deportista->Nombre);
+    free(deportista->Equipo);
     free(deportista);
 }

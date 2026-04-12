@@ -5,12 +5,11 @@
 #include <stdlib.h>
 
 #include <string.h>
-#include "linked_list.h"
-
-
+#include "deportista.h"
 
 void createDeportistasCSV(int cantidadDatos);
-void loadDeportistasCSV(LinkedList linkedList);
+Deportista* loadDeportistasArray(int *count);
+void freeDeportistasArray(Deportista *deportistas, int count);
 
 
 #endif
