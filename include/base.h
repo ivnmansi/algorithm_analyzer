@@ -18,7 +18,8 @@
 #include "searching.h"
 #include "sorting.h"
 
-#define NAMES_LENGHT 3
+#define NAMES_LENGHT_MIN 3
+#define NAMES_LENGHT_MAX 8
 #define MAX_DATA 100000
 #define MIN_DATA 10
 #define MAX_SCORE 100.0

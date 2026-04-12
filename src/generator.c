@@ -26,16 +26,18 @@ char* generate_random_name(){
     const char letters[] = "abcdefghijklmnopqrstuvwxyz";
     int n = (int)strlen(letters);
 
-    char* name = malloc((size_t)NAMES_LENGHT + 1);
+    int nameLength = (rand() % (NAMES_LENGHT_MAX - NAMES_LENGHT_MIN + 1)) + NAMES_LENGHT_MIN;
+
+    char* name = malloc((size_t)nameLength + 1);
     if (name == NULL) {
         return NULL; // aca deberia manejarse con alguna funcion de error, pero por ahora solo devuelvo NULL
     }
 
-    for (int i = 0; i < NAMES_LENGHT; i++) {
+    for (int i = 0; i < nameLength; i++) {
         name[i] = letters[rand() % n];
     }
 
-    name[NAMES_LENGHT] = '\0';
+    name[nameLength] = '\0';
     return name;
 
 }
