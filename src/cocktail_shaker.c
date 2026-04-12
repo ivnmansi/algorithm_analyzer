@@ -33,6 +33,9 @@ void cocktail_shaker_sort_desc(Deportista* array, int n, SortCriteria criteria){
                 case SORT_BY_NOMBRE:
                     shouldSwap = strcmp(array[i]->Nombre, array[i + 1]->Nombre) < 0;
                     break;
+                case SORT_BY_EQUIPO:
+                    shouldSwap = strcmp(array[i]->Equipo, array[i + 1]->Equipo) < 0;
+                    break;
                 default:
                     break;
             }
@@ -62,6 +65,9 @@ void cocktail_shaker_sort_desc(Deportista* array, int n, SortCriteria criteria){
                     break;
                 case SORT_BY_NOMBRE:
                     shouldSwap = strcmp(array[i - 1]->Nombre, array[i]->Nombre) < 0;
+                    break;
+                case SORT_BY_EQUIPO:
+                    shouldSwap = strcmp(array[i - 1]->Equipo, array[i]->Equipo) < 0;
                     break;
                 default:
                     break;

@@ -9,11 +9,33 @@
 #include <string.h>
 
 typedef enum {
-    SORT_BY_ID,
-    SORT_BY_PUNTAJE,
-    SORT_BY_COMPETENCIAS,
-    SORT_BY_NOMBRE,
+    SORT_BY_ID = 1,
+    SORT_BY_PUNTAJE = 2,
+    SORT_BY_COMPETENCIAS = 3,
+    SORT_BY_NOMBRE = 4,
+    SORT_BY_EQUIPO = 5
 } SortCriteria;
+
+typedef enum {
+    DESCENDING = 1,
+    ASCENDING = 0
+} SortOrder;
+
+typedef enum {
+    INSERTION_SORT = 1,
+    BUBBLE_SORT = 2,
+    SELECTION_SORT = 3,
+    COCKTAIL_SHAKER_SORT = 4
+} SortAlgorithm;
+
+typedef enum {
+    SECUENTIAL_SEARCH = 1,
+    BINARY_SEARCH = 2
+} SearchAlgorithm;
+
+typedef enum {
+    SEARCH_BY_ID = 1
+} SearchCriteria;
 
 void cocktail_shaker_sort_desc(Deportista* array, int n, SortCriteria criteria);
 
