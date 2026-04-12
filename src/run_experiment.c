@@ -124,13 +124,12 @@ static SearchAlgorithm ask_search_algorithm()
 static void run_sort_operation(SortCriteria criteria, int rankingAmount, SortOrder order)
 {
     Deportista *deportistas;
-    int algorithmOption;
+    SortAlgorithm algorithmOption = ask_sort_algorithm();
     int count, i;
 
-    algorithmOption = ask_sort_algorithm();
 
     switch(algorithmOption){
-        case INSERTION_SORT: // Insertion sort
+        case INSERTION_SORT:
             if(load_data(&deportistas, &count) == 0){
                 return;
             }
@@ -294,26 +293,8 @@ void runExperiment()
 
     SortOrder order = ask_sort_order();
 
-    switch(criteria){
-        case SORT_BY_ID:
-            run_sort_operation(criteria, MAX_DATA, order);
-            break;
-        case SORT_BY_PUNTAJE:
-            run_sort_operation(criteria, MAX_DATA, order);
-            break;
-        case SORT_BY_COMPETENCIAS:
-            run_sort_operation(criteria, MAX_DATA, order);
-            break;
-        case SORT_BY_NOMBRE:
-            run_sort_operation(criteria, MAX_DATA, order);
-            break;
-        case SORT_BY_EQUIPO:
-            run_sort_operation(criteria, MAX_DATA, order);
-            break;
-        default:
-            printf("Campo de ordenamiento invalido\n");
-            return;
-    }
+    run_sort_operation(criteria, MAX_DATA, order);
+
 }
 
 /**

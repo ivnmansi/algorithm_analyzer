@@ -1,14 +1,14 @@
 # Fdb version 4
-["biber main"] 0 "main.bcf" "main.bbl" "main" 1775946083 -1
+["biber main"] 0 "main.bcf" "main.bbl" "main" 1776017787 -1
   "./bib/references.bib" 1762223087 0 d41d8cd98f00b204e9800998ecf8427e ""
-  "main.bcf" 1775946083 106642 e40038d96af8e92453968d53635735bf "pdflatex"
+  "main.bcf" 1776017787 106642 e40038d96af8e92453968d53635735bf "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1775946082 "/home/ayrtonmo/Desktop/git/algoritmos_tarea1/docs/main.tex" "main.pdf" "main" 1775946083 0
+["pdflatex"] 1776017786 "/home/ayrtonmo/Desktop/git/algoritmos_tarea1/docs/main.tex" "main.pdf" "main" 1776017787 0
   "/etc/texmf/web2c/texmf.cnf" 1754696973 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/ayrtonmo/Desktop/git/algoritmos_tarea1/docs/main.tex" 1775946081 1375 258b3f2494b72cd75e540dc32ebf91f7 ""
+  "/home/ayrtonmo/Desktop/git/algoritmos_tarea1/docs/main.tex" 1776017786 1389 0f7f42af1c5beb4394d6a53b01d9d496 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm" 1246382020 916 f87d7c45f9c908e672703b83b72241a3 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam7.tfm" 1246382020 928 2dc8d444221b7a635bb58038579b861a ""
@@ -235,13 +235,13 @@
   "chapters/ch5_conclusion.tex" 1762223079 22 6efed079ea537434853b968f19945a3d ""
   "frontmatter/abstract.tex" 1762223122 19 8588910350c72489bb18fbec71841443 ""
   "frontmatter/titlepage.tex" 1762223452 466 2fab096a24ab6df587c1bb3a12046110 ""
-  "main.aux" 1775946083 2109 db8ab760ce40480e4fd63cf4b5cca1c1 "pdflatex"
+  "main.aux" 1776017787 2109 db8ab760ce40480e4fd63cf4b5cca1c1 "pdflatex"
   "main.bbl" 1762223088 466 ee04f40f768daeed26442158e95aba61 "biber main"
-  "main.lof" 1775946083 130 6065a55bb8926a8d1f250ea1e44d6185 "pdflatex"
-  "main.out" 1775946083 944 3604aeb37eb7110b3d53047ff4f57a67 "pdflatex"
-  "main.run.xml" 1775946083 2406 f00984c5f7f73bed294a816809cc5de5 "pdflatex"
-  "main.tex" 1775946081 1375 258b3f2494b72cd75e540dc32ebf91f7 ""
-  "main.toc" 1775946083 604 08433d7dbd8f8d739737937f56ff3a9e "pdflatex"
+  "main.lof" 1776017787 130 6065a55bb8926a8d1f250ea1e44d6185 "pdflatex"
+  "main.out" 1776017787 944 3604aeb37eb7110b3d53047ff4f57a67 "pdflatex"
+  "main.run.xml" 1776017787 2406 f00984c5f7f73bed294a816809cc5de5 "pdflatex"
+  "main.tex" 1776017786 1389 0f7f42af1c5beb4394d6a53b01d9d496 ""
+  "main.toc" 1776017787 604 08433d7dbd8f8d739737937f56ff3a9e "pdflatex"
   "preamble.tex" 1761168312 1415 5bb8c32027febcb01dbfd6aeeb4e6dc7 ""
   (generated)
   "main.aux"
