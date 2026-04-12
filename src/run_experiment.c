@@ -112,34 +112,7 @@ static SearchAlgorithm ask_search_algorithm()
     return alg;
 }
 
-/**
- * @brief Pregunta por el campo de ordenamiento.
- *
- * @return SortCriteria Opción seleccionada.
- */
-static SortCriteria ask_sort_criteria()
-{
-    char option[16];
 
-    printf("Seleccione campo de ordenamiento:\n");
-    printf("1. ID\n");
-    printf("2. Puntaje\n");
-    printf("3. Competencias\n");
-    printf("4. Nombre\n");
-    printf("5. Equipo\n");
-    printf("Opcion: ");
-
-    if(fgets(option, sizeof(option), stdin) == NULL){
-        return 0;
-    }
-
-    SortCriteria criteria = atoi(option);
-    if(criteria != SORT_BY_ID && criteria != SORT_BY_PUNTAJE && criteria != SORT_BY_COMPETENCIAS && criteria != SORT_BY_NOMBRE && criteria != SORT_BY_EQUIPO){
-        return 0;
-    }
-
-    return criteria;
-}
 
 /**
  * @brief Ejecuta una operación de ordenamiento o ranking.
@@ -261,6 +234,36 @@ void print_help(const char *programName)
 }
 
 /**
+ * @brief Pregunta por el campo de ordenamiento.
+ *
+ * @return SortCriteria Opción seleccionada.
+ */
+static SortCriteria ask_sort_criteria()
+{
+    char option[16];
+
+    printf("Seleccione campo de ordenamiento:\n");
+    printf("1. ID\n");
+    printf("2. Puntaje\n");
+    printf("3. Competencias\n");
+    printf("4. Nombre\n");
+    printf("5. Equipo\n");
+    printf("Opcion: ");
+
+    if(fgets(option, sizeof(option), stdin) == NULL){
+        return 0;
+    }
+
+    SortCriteria criteria = atoi(option);
+    if(criteria != SORT_BY_ID && criteria != SORT_BY_PUNTAJE && criteria != SORT_BY_COMPETENCIAS && criteria != SORT_BY_NOMBRE && criteria != SORT_BY_EQUIPO){
+        return 0;
+    }
+
+    return criteria;
+}
+
+
+/**
  * @brief Funcion que pregunta por el sentido del ordenamiento
  * @return SortOrder Opcion seleccionada
  */
@@ -293,19 +296,19 @@ void runExperiment()
 
     switch(criteria){
         case SORT_BY_ID:
-            run_sort_operation(criteria, MAX_DATA, 0);
+            run_sort_operation(criteria, MAX_DATA, order);
             break;
         case SORT_BY_PUNTAJE:
-            run_sort_operation(criteria, MAX_DATA, 0);
+            run_sort_operation(criteria, MAX_DATA, order);
             break;
         case SORT_BY_COMPETENCIAS:
-            run_sort_operation(criteria, MAX_DATA, 0);
+            run_sort_operation(criteria, MAX_DATA, order);
             break;
         case SORT_BY_NOMBRE:
-            run_sort_operation(criteria, MAX_DATA, 0);
+            run_sort_operation(criteria, MAX_DATA, order);
             break;
         case SORT_BY_EQUIPO:
-            run_sort_operation(criteria, MAX_DATA, 0);
+            run_sort_operation(criteria, MAX_DATA, order);
             break;
         default:
             printf("Campo de ordenamiento invalido\n");
@@ -313,29 +316,10 @@ void runExperiment()
     }
 }
 
-
-// void runExperiment(){
-//     Deportista* arr = NULL;
-//     int n = 0;
-
-//     if(!loadDeportistasCSVArray(&arr, &n)){
-//         printf("No se pudo cargar CSV en arreglo.\n");
-//         return;
-//     }
-
-//     clock_t t0 = clock();
-//     cocktail_shaker_sort_desc(arr, n, SORT_BY_PUNTAJE);
-//     clock_t t1 = clock();
-
-//     double elapsed = (double)(t1 - t0) / CLOCKS_PER_SEC;
-//     printf("Elementos: %d\n", n);
-//     printf("Tiempo cocktail shaker: %.6f s\n", elapsed);
-
-//     int muestra = n < 10 ? n : 10;
-//     for(int i = 0; i < muestra; i++){
-//         printf("ID: %d | Nombre: %s | Equipo: %s | Puntaje: %.2f | Competencias: %d\n",
-//             arr[i]->ID, arr[i]->Nombre, arr[i]->Equipo, arr[i]->Puntaje, arr[i]->Competencias);
-//     }
-
-//     freeDeportistasArray(arr, n);
-// }
+/**
+    - Cosas por hacer:
+        - Implementar Cocktail shaker sort en la ejecucion
+        - Implementar los algoritmos de ordenamiento restantes
+        - Implementar la búsqueda binaria
+        - Agregar validaciones de entrada
+ */

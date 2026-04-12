@@ -37,10 +37,11 @@ typedef enum {
     SEARCH_BY_ID = 1
 } SearchCriteria;
 
-void cocktail_shaker_sort_desc(Deportista* array, int n, SortCriteria criteria);
 
 void swap_deportistas(Deportista* a, Deportista* b);
 
-void insertion_sort_deportistas(Deportista *deportistas, int length, int field, int descending);
+void cocktail_shaker_sort(Deportista* array, int n, SortCriteria criteria, SortOrder order);
+
+void insertion_sort_deportistas(Deportista *deportistas, int length, SortCriteria criteria, SortOrder order);
 
 #endif
