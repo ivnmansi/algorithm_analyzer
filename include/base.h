@@ -27,11 +27,13 @@
 #define MAX_COMPETITIONS 45
 #define MIN_COMPETITIONS 1
 #define CSV_ROUTE "./db/deportistas.csv"
-#define BENCHMARK_ROUTE "./db/search_benchmark.csv"
+#define SEARCH_BENCHMARK_ROUTE "./db/search_benchmark.csv"
+#define SORT_BENCHMARK_ROUTE "./db/sort_benchmark.csv"
 
 
 void runExperiment();
 void run_search_benchmark();
+void run_sort_benchmark();
 void search_by_id(int targetId);
 void show_ranking(int rankingAmount);
 void print_help(const char *programName);

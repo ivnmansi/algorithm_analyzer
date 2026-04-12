@@ -263,6 +263,7 @@ void print_help(const char *programName)
     printf("  -id [valor]        Busca un deportista por ID\n");
     printf("  -r [cantidad]      Muestra el top N por puntaje\n");
     printf("  -b                 Ejecuta benchmark de busqueda\n");
+    printf("  -s                 Ejecuta benchmark de ordenamiento\n");
 }
 
 /**
@@ -326,6 +327,9 @@ SortOrder ask_sort_order()
     return (selected == 1) ? DESCENDING : ASCENDING;
 }
 
+/**
+ * @brief Funcion encargada de ejecutar una operacion de ordenamiento o ranking, preguntando al usuario por el criterio, orden y algoritmo a utilizar, y mostrando los resultados por consola.
+ */
 void runExperiment()
 {
     SortCriteria criteria = ask_sort_criteria();
@@ -336,13 +340,16 @@ void runExperiment()
 
 }
 
+/**
+ * @brief Funcion que registra el tiempo de ejecucion de los algoritmos de busqueda secuencial y binaria para diferentes tamaños de datos, guardando los resultados en un archivo CSV y mostrando un resumen por consola
+ */
 void run_search_benchmark()
 {
     const int sizes[] = {10, 100, 1000, 10000};
     const int num_sizes = (int)(sizeof(sizes) / sizeof(sizes[0]));
-    const int repeats = 30; // cantidad de veces que se repite cada prueba para promediar resultados
+    const int repeats = 20; // cantidad de veces que se repite cada prueba para promediar resultados
 
-    FILE *out = fopen(BENCHMARK_ROUTE, "w");
+    FILE *out = fopen(SEARCH_BENCHMARK_ROUTE, "w");
     if(out == NULL){
         printf("No se pudo crear archivo\n");
         return;
@@ -410,5 +417,218 @@ void run_search_benchmark()
 
     fclose(out);
     printf("\nBenchmark guardado correctamente\n");
+}
+
+/**
+ * @brief Funcion que duplica una cadena de caracteres, utilizada para clonar los datos de deportistas en los benchmarks.
+ * @param srcString String a duplicar.
+ * @return char* Cadena duplicada o NULL si hubo un error.
+ */
+static char *duplicate_string_bench(const char *srcString)
+{
+    size_t len;
+    char *copy;
+
+    if(srcString == NULL){
+        return NULL;
+    }
+
+    len = strlen(srcString);
+    copy = malloc(len + 1);
+    if(copy == NULL){
+        return NULL;
+    }
+
+    memcpy(copy, srcString, len + 1);
+    return copy;
+}
+
+/**
+ * @brief Funcion que clona un arreglo de deportistas, creando nuevas instancias de cada deportista con los mismos datos. Utilizada para los benchmarks de ordenamiento para evitar modificar el mismo arreglo base.
+ * @param srcArray Arreglo a clonar.
+ * @param count Cantidad de elementos del arreglo.
+ * @return Deportista* Arreglo de deportistas clonados o NULL si hubo un error.
+ */
+static Deportista *clone_deportistas_array(Deportista *srcArray, int count)
+{
+    Deportista *deportistas;
+
+    if(srcArray == NULL || count < 0){
+        return NULL;
+    }
+
+    deportistas = malloc(sizeof(Deportista) * count);
+    if(deportistas == NULL){
+        return NULL;
+    }
+
+    for(int i = 0; i < count; i++){
+        char *nombre;
+        char *equipo;
+
+        if(srcArray[i] == NULL){
+            deportistas[i] = NULL;
+            continue;
+        }
+
+        nombre = duplicate_string_bench(srcArray[i]->Nombre);
+        equipo = duplicate_string_bench(srcArray[i]->Equipo);
+
+        if(nombre == NULL || equipo == NULL){
+            free(nombre);
+            free(equipo);
+            for(int j = 0; j < i; j++){
+                if(deportistas[j] != NULL){
+                    deleteDeportista(deportistas[j]);
+                }
+            }
+            free(deportistas);
+            return NULL;
+        }
+
+        deportistas[i] = createDeportista(
+            srcArray[i]->ID,
+            nombre,
+            equipo,
+            srcArray[i]->Puntaje,
+            srcArray[i]->Competencias
+        );
+
+        if(deportistas[i] == NULL){
+            free(nombre);
+            free(equipo);
+            for(int j = 0; j < i; j++){
+                if(deportistas[j] != NULL){
+                    deleteDeportista(deportistas[j]);
+                }
+            }
+            free(deportistas);
+            return NULL;
+        }
+    }
+
+    return deportistas;
+}
+
+/**
+ * @brief Funcion encargada de ejecutar una operacion de ordenamiento o ranking, preguntando al usuario por el criterio, orden y algoritmo a utilizar, y mostrando los resultados por consola.
+ */
+void run_sort_benchmark()
+{
+    const int sizes[] = {10, 100, 1000, 10000};
+    const int num_sizes = (int)(sizeof(sizes) / sizeof(sizes[0]));
+    const int repeats = 20;
+
+    FILE *out = fopen(SORT_BENCHMARK_ROUTE, "w");
+    if(out == NULL){
+        printf("No se pudo crear archivo\n");
+        return;
+    }
+
+    fprintf(out, "n,repeticiones,insertion_s,bubble_s,selection_s,cocktail_s\n");
+    printf("n | rep | insertion | bubble | selection | cocktail\n");
+    printf("----------------------------------------------------\n");
+
+    for(int i = 0; i < num_sizes; i++){
+        int n = sizes[i];
+        double totalIns = 0.0;
+        double totalBub = 0.0;
+        double totalSel = 0.0;
+        double totalCoc = 0.0;
+        int validRuns = 0;
+
+        for(int r = 0; r < repeats; r++){
+            int count = 0;
+            int runIsOk = 1;
+            clock_t start, end;
+            Deportista* baseArray = NULL;
+            Deportista* work = NULL;
+
+            createDeportistasCSV(n);
+            baseArray = loadDeportistasArray(&count);
+            if(baseArray == NULL || count <= 0){
+                if(baseArray != NULL){
+                    freeDeportistasArray(baseArray, count);
+                }
+                continue;
+            }
+
+            work = clone_deportistas_array(baseArray, count);
+            if(work == NULL){ runIsOk = 0; }
+            if(runIsOk){
+                start = clock();
+                insertion_sort_deportistas(work, count, SORT_BY_ID, ASCENDING);
+                end = clock();
+                totalIns += (double)(end - start) / CLOCKS_PER_SEC;
+                freeDeportistasArray(work, count);
+            }
+
+            work = clone_deportistas_array(baseArray, count);
+            if(work == NULL){ runIsOk = 0; }
+            if(runIsOk){
+                start = clock();
+                optimized_bubble_sort(work, count, SORT_BY_ID, ASCENDING);
+                end = clock();
+                totalBub += (double)(end - start) / CLOCKS_PER_SEC;
+                freeDeportistasArray(work, count);
+            }
+
+            work = clone_deportistas_array(baseArray, count);
+            if(work == NULL){ runIsOk = 0; }
+            if(runIsOk){
+                start = clock();
+                selection_sort(work, count, SORT_BY_ID, ASCENDING);
+                end = clock();
+                totalSel += (double)(end - start) / CLOCKS_PER_SEC;
+                freeDeportistasArray(work, count);
+            }
+
+            work = clone_deportistas_array(baseArray, count);
+            if(work == NULL){ runIsOk = 0; }
+            if(runIsOk){
+                start = clock();
+                cocktail_shaker_sort(work, count, SORT_BY_ID, ASCENDING);
+                end = clock();
+                totalCoc += (double)(end - start) / CLOCKS_PER_SEC;
+                freeDeportistasArray(work, count);
+            }
+
+            freeDeportistasArray(baseArray, count);
+
+            if(runIsOk){
+                validRuns++;
+            }
+        }
+
+        if(validRuns == 0){
+            fprintf(out, "%d,%d,0,0,0,0\n", n, repeats);
+            printf("%d | %d | 0 | 0 | 0 | 0\n", n, repeats);
+            continue;
+        }
+
+        fprintf(
+            out,
+            "%d,%d,%.10f,%.10f,%.10f,%.10f\n",
+            n,
+            validRuns,
+            totalIns / validRuns,
+            totalBub / validRuns,
+            totalSel / validRuns,
+            totalCoc / validRuns
+        );
+
+        printf(
+            "%d | %d | %.10f | %.10f | %.10f | %.10f\n",
+            n,
+            validRuns,
+            totalIns / validRuns,
+            totalBub / validRuns,
+            totalSel / validRuns,
+            totalCoc / validRuns
+        );
+    }
+
+    fclose(out);
+    printf("\nBenchmark de ordenamiento guardado con exito\n");
 }
 
