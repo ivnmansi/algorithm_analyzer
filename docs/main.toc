@@ -1,9 +1,0 @@
-\babel@toc {spanish}{}\relax 
-\contentsline {chapter}{\'{I}ndice de figuras}{\es@scroman {iv}}{chapter*.3}%
-\contentsline {chapter}{\numberline {1}Introducción}{1}{chapter.1}%
-\contentsline {chapter}{\numberline {2}Objetivos}{2}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Objetivo Principal}{2}{section.2.1}%
-\contentsline {section}{\numberline {2.2}Objetivos Secundarios}{2}{section.2.2}%
-\contentsline {chapter}{\numberline {3}Marco teórico}{3}{chapter.3}%
-\contentsline {chapter}{\numberline {4}Desarrollo}{4}{chapter.4}%
-\contentsline {chapter}{\numberline {5}Conclusión}{5}{chapter.5}%
