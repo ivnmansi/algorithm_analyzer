@@ -69,7 +69,7 @@ int main(int argc, char **argv)
                 break;
             }
             case 's':
-            {
+            {   
                 run_sort_benchmark();
                 break;
             }

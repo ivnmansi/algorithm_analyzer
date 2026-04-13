@@ -20,12 +20,14 @@
 
 #define NAMES_LENGHT_MIN 3
 #define NAMES_LENGHT_MAX 8
-#define MAX_DATA 100000
+#define MAX_DATA 2147483647
 #define MIN_DATA 10
 #define MAX_SCORE 100.0
 #define MIN_SCORE 0.0
 #define MAX_COMPETITIONS 45
 #define MIN_COMPETITIONS 1
+#define INTERVAL_SIZE 10
+#define EXPERIMENT_REPEATS 20
 #define CSV_ROUTE "./db/deportistas.csv"
 #define SEARCH_BENCHMARK_ROUTE "./db/search_benchmark.csv"
 #define SORT_BENCHMARK_ROUTE "./db/sort_benchmark.csv"
