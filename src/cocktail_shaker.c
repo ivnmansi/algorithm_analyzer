@@ -1,15 +1,14 @@
 /**
  * @file cocktail_shaker.c
- * @brief Desarrollo del algoritmo cocktail shaker sort
+ * @brief Implementacion del algoritmo cocktail shaker sort.
  */
-
 
 #include "sorting.h"
 
 /**
- * @brief Funcion que determina si dos deportistas deben ser intercambiados según el criterio y orden de ordenamiento.
+ * @brief Determina si dos deportistas deben intercambiarse.
  *
- * @param lef Deportista izquierdo.
+ * @param left Deportista izquierdo.
  * @param right Deportista derecho.
  * @param criteria Criterio a utilizar para la comparacion.
  * @param order Orden de ordenamiento (ascendente o descendente).
@@ -19,50 +18,50 @@ static int should_swap(Deportista left, Deportista right, SortCriteria criteria,
 {
     int cmp = compare_by_criteria(left, right, criteria);
 
-    if(order == ASCENDING){
-        return cmp > 0; // SI left > right, entonces se debe intercambiar
+    if(order == ASCENDING) {
+        return cmp > 0;
     }
 
-    return cmp < 0; // DESCENDING, Si left < right, entonces se debe intercambiar
+    return cmp < 0;
 }
 
 /**
- * @brief Ordena un arreglo de deportistas utilizando el algoritmo cocktail shaker sort según un criterio y orden de ordenamiento.
+ * @brief Ordena un arreglo de deportistas con cocktail shaker sort.
  *
  * @param deportistas Arreglo de deportistas a ordenar.
- * @param lenght Largo del arreglo de deportistas.
+ * @param length Largo del arreglo de deportistas.
  * @param criteria Criterio a utilizar para la comparacion.
  * @param order Sentido de ordenamiento (ascendente o descendente).
  */
-void cocktail_shaker_sort(Deportista* deportistas, int lenght, SortCriteria criteria, SortOrder order)
+void cocktail_shaker_sort(Deportista *deportistas, int length, SortCriteria criteria, SortOrder order)
 {
-    if(deportistas == NULL || lenght < 2){
+    int left = 0;
+    int right = length - 1;
+    int swapped = 1;
+
+    if(deportistas == NULL || length < 2) {
         return;
     }
 
-    int left = 0;
-    int right = lenght - 1;
-    int swapped = 1;
-
-    while(swapped){
+    while(swapped) {
         swapped = 0;
 
-        for(int i = left; i < right; i++){
-            if(should_swap(deportistas[i], deportistas[i + 1], criteria, order)){
+        for(int i = left; i < right; i++) {
+            if(should_swap(deportistas[i], deportistas[i + 1], criteria, order)) {
                 swap_deportistas(&deportistas[i], &deportistas[i + 1]);
                 swapped = 1;
             }
         }
 
-        if(!swapped){
+        if(!swapped) {
             break;
         }
 
         right--;
         swapped = 0;
 
-        for(int i = right; i > left; i--){
-            if(should_swap(deportistas[i - 1], deportistas[i], criteria, order)){
+        for(int i = right; i > left; i--) {
+            if(should_swap(deportistas[i - 1], deportistas[i], criteria, order)) {
                 swap_deportistas(&deportistas[i - 1], &deportistas[i]);
                 swapped = 1;
             }

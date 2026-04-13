@@ -1,30 +1,44 @@
 /**
  * @file selection_sort.c
- * @brief Implementacion de selection sort
+ * @brief Implementacion de selection sort para deportistas.
  */
 
 #include "sorting.h"
 
+/**
+ * @brief Ordena un arreglo de deportistas usando selection sort.
+ *
+ * @param deportistas Arreglo de deportistas a ordenar.
+ * @param length Largo del arreglo.
+ * @param criteria Criterio a utilizar para la comparacion.
+ * @param order Orden de ordenamiento (ascendente o descendente).
+ */
 void selection_sort(Deportista *deportistas, int length, SortCriteria criteria, SortOrder order)
 {
-	if(deportistas == NULL || length < 2){
-		return;
-	}
+    if(deportistas == NULL || length < 2) {
+        return;
+    }
 
-	for(int i = 0; i < length - 1; i++){
-		int selected_index = i;
+    for(int i = 0; i < length - 1; i++) {
+        int selectedIndex = i;
 
-		for(int j = i + 1; j < length; j++){
-			int cmp = compare_by_criteria(deportistas[selected_index], deportistas[j], criteria);
-			int should_select = (order == ASCENDING) ? (cmp > 0) : (cmp < 0);
+        for(int j = i + 1; j < length; j++) {
+            int cmp = compare_by_criteria(deportistas[selectedIndex], deportistas[j], criteria);
+            int shouldSelect;
 
-			if(should_select){
-				selected_index = j;
-			}
-		}
+            if(order == ASCENDING) {
+                shouldSelect = (cmp > 0);
+            } else {
+                shouldSelect = (cmp < 0);
+            }
 
-		if(selected_index != i){
-			swap_deportistas(&deportistas[i], &deportistas[selected_index]);
-		}
-	}
+            if(shouldSelect) {
+                selectedIndex = j;
+            }
+        }
+
+        if(selectedIndex != i) {
+            swap_deportistas(&deportistas[i], &deportistas[selectedIndex]);
+        }
+    }
 }

@@ -1,20 +1,14 @@
 /**
  * @file benchmarks.c
- * @brief 
- * 
+ * @brief Implementacion de benchmarks de busqueda y ordenamiento.
  */
 
 #include "base.h"
-#include "csv.h"
-#include "deportista.h"
-#include "sorting.h"
-#include "print_format.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 /**
- * @brief Limpia la línea actual en la consola y mueve el cursor al inicio de la línea. Utilizada para actualizar la barra de progreso durante los benchmarks sin imprimir nuevas líneas.
- * 
+ * @brief Limpia la linea actual en la consola.
  */
 static void progress_clear_line(void)
 {
@@ -23,13 +17,13 @@ static void progress_clear_line(void)
 }
 
 /**
- * @brief Actualiza barra de progreso por consola, mostrando el nombre del benchmark, el intervalo actual, el tamaño de datos, la repetición actual y la etapa del proceso. Utilizada para mostrar el progreso durante los benchmarks de búsqueda y ordenamiento.
- * 
+ * @brief Actualiza la barra de progreso de un benchmark.
+ *
  * @param benchmarkName Nombre del benchmark (ej: "search" o "sort")
- * @param intervalIndex Índice del intervalo actual
+ * @param intervalIndex Indice del intervalo actual
  * @param intervalCount Cantidad de intervalos
- * @param n Tamaño de los datos
- * @param repeatIndex Índice de la repetición actual
+ * @param n Tamano de los datos
+ * @param repeatIndex Indice de la repeticion actual
  * @param repeatCount Cantidad de repeticiones
  * @param stage Etapa del proceso
  */
@@ -49,7 +43,8 @@ static void progress_update_line(const char *benchmarkName, int intervalIndex, i
 }
 
 /**
- * @brief Funcion que duplica una cadena de caracteres, utilizada para clonar los datos de deportistas en los benchmarks.
+ * @brief Duplica una cadena para los benchmarks.
+ *
  * @param srcString String a duplicar.
  * @return char* Cadena duplicada o NULL si hubo un error.
  */
@@ -58,13 +53,13 @@ static char *duplicate_string_bench(const char *srcString)
     size_t len;
     char *copy;
 
-    if(srcString == NULL){
+    if(srcString == NULL) {
         return NULL;
     }
 
     len = strlen(srcString);
     copy = malloc(len + 1);
-    if(copy == NULL){
+    if(copy == NULL) {
         return NULL;
     }
 
@@ -72,18 +67,30 @@ static char *duplicate_string_bench(const char *srcString)
     return copy;
 }
 
-static void memoryError(Deportista* baseArray, int count, FILE* out){
+/**
+ * @brief Maneja un error de memoria durante la ejecucion de benchmarks.
+ *
+ * @param baseArray Arreglo base cargado desde el CSV.
+ * @param count Cantidad de deportistas del arreglo base.
+ * @param out Archivo de salida del benchmark.
+ */
+static void handle_benchmark_memory_error(Deportista *baseArray, int count, FILE *out)
+{
     progress_clear_line();
     printf(SHOW_CURSOR);
-    print_error("No se pudieron cargar deportistas para el benchmark");
-    freeDeportistasArray(baseArray, count);
-    fclose(out);
-    exit(1);
+
+    if(out != NULL) {
+        fclose(out);
+    }
+
+    free_deportistas_array(baseArray, count);
+    print_error(ERROR_MEMORY_ALLOCATION_FAILED, "durante el benchmark");
+    exit(EXIT_FAILURE);
 }
 
-
 /**
- * @brief Funcion que clona un arreglo de deportistas, creando nuevas instancias de cada deportista con los mismos datos. Utilizada para los benchmarks de ordenamiento para evitar modificar el mismo arreglo base.
+ * @brief Clona un arreglo de deportistas para ejecutar benchmarks.
+ *
  * @param srcArray Arreglo a clonar.
  * @param count Cantidad de elementos a clonar
  * @return Deportista* Arreglo de deportistas clonados o NULL si hubo un error.
@@ -92,55 +99,59 @@ static Deportista *clone_deportistas_array(Deportista *srcArray, int count)
 {
     Deportista *deportistas;
 
-    if(srcArray == NULL || count < 0){
+    if(srcArray == NULL || count < 0) {
         return NULL;
     }
 
     deportistas = malloc(sizeof(Deportista) * count);
-    if(deportistas == NULL){
+    if(deportistas == NULL) {
         return NULL;
     }
 
-    for(int i = 0; i < count; i++){
+    for(int i = 0; i < count; i++) {
         char *nombre;
         char *equipo;
 
-        if(srcArray[i] == NULL){
+        if(srcArray[i] == NULL) {
             deportistas[i] = NULL;
             continue;
         }
 
-        nombre = duplicate_string_bench(srcArray[i]->Nombre);
-        equipo = duplicate_string_bench(srcArray[i]->Equipo);
+        nombre = duplicate_string_bench(srcArray[i]->nombre);
+        equipo = duplicate_string_bench(srcArray[i]->equipo);
 
-        if(nombre == NULL || equipo == NULL){
+        if(nombre == NULL || equipo == NULL) {
             free(nombre);
             free(equipo);
-            for(int j = 0; j < i; j++){
-                if(deportistas[j] != NULL){
-                    deleteDeportista(deportistas[j]);
+
+            for(int j = 0; j < i; j++) {
+                if(deportistas[j] != NULL) {
+                    delete_deportista(deportistas[j]);
                 }
             }
+
             free(deportistas);
             return NULL;
         }
 
-        deportistas[i] = createDeportista(
-            srcArray[i]->ID,
+        deportistas[i] = create_deportista(
+            srcArray[i]->id,
             nombre,
             equipo,
-            srcArray[i]->Puntaje,
-            srcArray[i]->Competencias
+            srcArray[i]->puntaje,
+            srcArray[i]->competencias
         );
 
-        if(deportistas[i] == NULL){
+        if(deportistas[i] == NULL) {
             free(nombre);
             free(equipo);
-            for(int j = 0; j < i; j++){
-                if(deportistas[j] != NULL){
-                    deleteDeportista(deportistas[j]);
+
+            for(int j = 0; j < i; j++) {
+                if(deportistas[j] != NULL) {
+                    delete_deportista(deportistas[j]);
                 }
             }
+
             free(deportistas);
             return NULL;
         }
@@ -150,33 +161,34 @@ static Deportista *clone_deportistas_array(Deportista *srcArray, int count)
 }
 
 /**
- * @brief Funcion que registra el tiempo de ejecucion de los algoritmos de busqueda secuencial y binaria para diferentes tamaños de datos, guardando los resultados en un archivo CSV y mostrando un resumen por consola
+ * @brief Ejecuta el benchmark de busqueda y guarda sus resultados en CSV.
  */
 void run_search_benchmark()
 {
-    // carga inicial de deportistas
-    int count = 0; // Almacena cantidad de deportistas cargados
-    Deportista* baseArray = loadDeportistasArray(&count);
-    if(baseArray == NULL || count <= 0){
-        if(baseArray != NULL){
-            freeDeportistasArray(baseArray, count);
+    int count = 0;
+    Deportista *baseArray = load_deportistas_array(&count);
+
+    if(baseArray == NULL || count <= 0) {
+        if(baseArray != NULL) {
+            free_deportistas_array(baseArray, count);
         }
-        print_error("No se pudieron cargar deportistas para el benchmark");
+
+        print_error(ERROR_BENCHMARK_DATA_LOAD_FAILED, NULL);
         return;
     }
 
-    // calculo de tamaños segun cantidad de deportistas cargados
     int intervals = (count < INTERVAL_SIZE) ? count : INTERVAL_SIZE;
-    int step_size = count / intervals;
-    if (step_size <= 0){
-        step_size = 1;
+    int stepSize = count / intervals;
+
+    if(stepSize <= 0) {
+        stepSize = 1;
     }
 
-    // crear archivo CSV para guardar resultados
     FILE *out = fopen(SEARCH_BENCHMARK_ROUTE, "w");
-    if(out == NULL){
-        printf("No se pudo crear archivo\n");
-        freeDeportistasArray(baseArray, count);
+
+    if(out == NULL) {
+        print_error(ERROR_FILE_CREATE_FAILED, SEARCH_BENCHMARK_ROUTE);
+        free_deportistas_array(baseArray, count);
         return;
     }
 
@@ -190,33 +202,32 @@ void run_search_benchmark()
 
     printf(HIDE_CURSOR);
 
-    // inicio de experimento
-    for(int i = 0; i < intervals; i++){
-        int n = (i == intervals - 1) ? count : (step_size * (i + 1));
-        double total_seq = 0;
-        double total_bin = 0;
+    for(int i = 0; i < intervals; i++) {
+        int n = (i == intervals - 1) ? count : (stepSize * (i + 1));
+        double totalSeq = 0.0;
+        double totalBin = 0.0;
 
-        for(int j = 0; j < EXPERIMENT_REPEATS; j++){
+        for(int j = 0; j < EXPERIMENT_REPEATS; j++) {
             int targetId;
-            clock_t start, end;
+            clock_t start;
+            clock_t end;
+            Deportista *work;
 
             progress_update_line("search", i + 1, intervals, n, j + 1, EXPERIMENT_REPEATS, "clonando");
 
-            Deportista* work = clone_deportistas_array(baseArray, n);
-            if(work == NULL){
-                memoryError(baseArray, count, out);
+            work = clone_deportistas_array(baseArray, n);
+            if(work == NULL) {
+                handle_benchmark_memory_error(baseArray, count, out);
             }
 
-            // Se toma el ID del ultimo elemento arbitrariamente (asi se asegura que existe)
-            targetId = work[n - 1]->ID;
+            targetId = work[n - 1]->id;
 
             progress_update_line("search", i + 1, intervals, n, j + 1, EXPERIMENT_REPEATS, "secuencial");
             start = clock();
             sequential_search_by_id(work, n, targetId);
             end = clock();
-            total_seq += (double)(end - start) / CLOCKS_PER_SEC;
+            totalSeq += (double)(end - start) / CLOCKS_PER_SEC;
 
-            // binary search necesita que el arreglo esté ordenado
             insertion_sort_deportistas(work, n, SORT_BY_ID, ASCENDING);
 
             progress_update_line("search", i + 1, intervals, n, j + 1, EXPERIMENT_REPEATS, "binaria");
@@ -224,58 +235,59 @@ void run_search_benchmark()
             start = clock();
             binary_search_by_id(work, n, targetId);
             end = clock();
-            total_bin += (double)(end - start) / CLOCKS_PER_SEC;
+            totalBin += (double)(end - start) / CLOCKS_PER_SEC;
 
-            freeDeportistasArray(work, n);
+            free_deportistas_array(work, n);
         }
 
-        double avgSeq = total_seq / EXPERIMENT_REPEATS;
-        double avgBin = total_bin / EXPERIMENT_REPEATS;
+        double avgSeq = totalSeq / EXPERIMENT_REPEATS;
+        double avgBin = totalBin / EXPERIMENT_REPEATS;
 
         fprintf(out, "%d,%.10f,%.10f\n", n, avgSeq, avgBin);
         progress_clear_line();
         printf("%d \t | \t %.10f \t | \t %.10f\n", n, avgSeq, avgBin);
-
     }
 
     progress_clear_line();
     printf(SHOW_CURSOR);
 
     fclose(out);
-    freeDeportistasArray(baseArray, count);
-    printf(BG_GREEN"\nBenchmark guardado correctamente en %s\n"RESET, SEARCH_BENCHMARK_ROUTE);
+    free_deportistas_array(baseArray, count);
+    printf(BG_GREEN "\nBenchmark guardado correctamente en %s\n" RESET, SEARCH_BENCHMARK_ROUTE);
 }
 
-
 /**
- * @brief Funcion encargada de ejecutar una operacion de ordenamiento o ranking, preguntando al usuario por el criterio, orden y algoritmo a utilizar, y mostrando los resultados por consola.
+ * @brief Ejecuta el benchmark de ordenamiento y guarda sus resultados en CSV.
  */
 void run_sort_benchmark()
-{   
-    // carga inicial de deportistas
-    int count = 0; // Almacena cantidad de deportistas cargados
-    Deportista* baseArray = loadDeportistasArray(&count);
-    if(baseArray == NULL || count <= 0){
-        if(baseArray != NULL){
-            freeDeportistasArray(baseArray, count);
+{
+    int count = 0;
+    Deportista *baseArray = load_deportistas_array(&count);
+
+    if(baseArray == NULL || count <= 0) {
+        if(baseArray != NULL) {
+            free_deportistas_array(baseArray, count);
         }
-         print_error("No se pudieron cargar deportistas para el benchmark");
+
+        print_error(ERROR_BENCHMARK_DATA_LOAD_FAILED, NULL);
         return;
-    }
-    // calculo de tamaños segun cantidad de deportistas cargados
-    int intervals = (count < INTERVAL_SIZE) ? count : INTERVAL_SIZE;
-    int step_size = count / intervals;
-    if (step_size <= 0){
-        step_size = 1;
     }
 
-    // generar archivo CSV para guardar resultados
+    int intervals = (count < INTERVAL_SIZE) ? count : INTERVAL_SIZE;
+    int stepSize = count / intervals;
+
+    if(stepSize <= 0) {
+        stepSize = 1;
+    }
+
     FILE *out = fopen(SORT_BENCHMARK_ROUTE, "w");
-    if(out == NULL){
-        printf("No se pudo crear archivo\n");
-        freeDeportistasArray(baseArray, count);
+
+    if(out == NULL) {
+        print_error(ERROR_FILE_CREATE_FAILED, SORT_BENCHMARK_ROUTE);
+        free_deportistas_array(baseArray, count);
         return;
     }
+
     fprintf(out, "n,promedio_insertion_s,promedio_bubble_s,promedio_selection_s,promedio_cocktail_s\n");
 
     printf(BOLD_BLUE "\n=== Sort benchmark ===\n" RESET);
@@ -286,92 +298,95 @@ void run_sort_benchmark()
 
     printf(HIDE_CURSOR);
 
-    // inicio de benchmark
-    for(int i = 0; i < intervals; i++){
-        int n = (i == intervals - 1) ? count : (step_size * (i + 1));
+    for(int i = 0; i < intervals; i++) {
+        int n = (i == intervals - 1) ? count : (stepSize * (i + 1));
 
-        double totalIns = 0.0;
-        double totalBub = 0.0;
-        double totalSel = 0.0;
-        double totalCoc = 0.0;
+        double totalInsertion = 0.0;
+        double totalBubble = 0.0;
+        double totalSelection = 0.0;
+        double totalCocktail = 0.0;
 
-        for(int r = 0; r < EXPERIMENT_REPEATS; r++){
-            Deportista* work;
-            clock_t start, end;
+        for(int r = 0; r < EXPERIMENT_REPEATS; r++) {
+            Deportista *work;
+            clock_t start;
+            clock_t end;
 
-            // insertion sort
             progress_update_line("sort", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, "insertion");
             work = clone_deportistas_array(baseArray, n);
-            if(work == NULL){
-                memoryError(baseArray, count, out);
+
+            if(work == NULL) {
+                handle_benchmark_memory_error(baseArray, count, out);
             }
+
             start = clock();
             insertion_sort_deportistas(work, n, SORT_BY_ID, ASCENDING);
             end = clock();
-            totalIns += (double)(end - start) / CLOCKS_PER_SEC;
-            freeDeportistasArray(work, n);
+            totalInsertion += (double)(end - start) / CLOCKS_PER_SEC;
+            free_deportistas_array(work, n);
 
-            // bubble sort optimizado
             progress_update_line("sort", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, "bubble");
-            
             work = clone_deportistas_array(baseArray, n);
-            if(work == NULL){
-                memoryError(baseArray, count, out);
+
+            if(work == NULL) {
+                handle_benchmark_memory_error(baseArray, count, out);
             }
+
             start = clock();
             optimized_bubble_sort(work, n, SORT_BY_ID, ASCENDING);
             end = clock();
-            totalBub += (double)(end - start) / CLOCKS_PER_SEC;
-            freeDeportistasArray(work, n);
+            totalBubble += (double)(end - start) / CLOCKS_PER_SEC;
+            free_deportistas_array(work, n);
 
-            // selection sort
             progress_update_line("sort", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, "selection");
             work = clone_deportistas_array(baseArray, n);
-            if(work == NULL){
-                memoryError(baseArray, count, out);
+
+            if(work == NULL) {
+                handle_benchmark_memory_error(baseArray, count, out);
             }
+
             start = clock();
             selection_sort(work, n, SORT_BY_ID, ASCENDING);
             end = clock();
-            totalSel += (double)(end - start) / CLOCKS_PER_SEC;
-            freeDeportistasArray(work, n);
-            
-            // cocktail shaker sort
+            totalSelection += (double)(end - start) / CLOCKS_PER_SEC;
+            free_deportistas_array(work, n);
+
             progress_update_line("sort", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, "cocktail");
             work = clone_deportistas_array(baseArray, n);
-            if(work == NULL){
-                memoryError(baseArray, count, out);
+
+            if(work == NULL) {
+                handle_benchmark_memory_error(baseArray, count, out);
             }
+
             start = clock();
             cocktail_shaker_sort(work, n, SORT_BY_ID, ASCENDING);
             end = clock();
-            totalCoc += (double)(end - start) / CLOCKS_PER_SEC;
-            freeDeportistasArray(work, n);
+            totalCocktail += (double)(end - start) / CLOCKS_PER_SEC;
+            free_deportistas_array(work, n);
         }
 
-        totalIns /= EXPERIMENT_REPEATS;
-        totalBub /= EXPERIMENT_REPEATS;
-        totalSel /= EXPERIMENT_REPEATS;
-        totalCoc /= EXPERIMENT_REPEATS;
+        totalInsertion /= EXPERIMENT_REPEATS;
+        totalBubble /= EXPERIMENT_REPEATS;
+        totalSelection /= EXPERIMENT_REPEATS;
+        totalCocktail /= EXPERIMENT_REPEATS;
 
         fprintf(
             out,
             "%d,%.10f,%.10f,%.10f,%.10f\n",
             n,
-            totalIns,
-            totalBub,
-            totalSel,
-            totalCoc
+            totalInsertion,
+            totalBubble,
+            totalSelection,
+            totalCocktail
         );
 
         progress_clear_line();
         printf(
             "%d \t | \t %.10f \t | \t %.10f \t | \t %.10f \t | \t %.10f\n",
             n,
-            totalIns,
-            totalBub,
-            totalSel,
-            totalCoc
+            totalInsertion,
+            totalBubble,
+            totalSelection,
+            totalCocktail
         );
     }
 
@@ -379,7 +394,6 @@ void run_sort_benchmark()
     printf(SHOW_CURSOR);
 
     fclose(out);
-    freeDeportistasArray(baseArray, count);
-    printf(BG_GREEN"\nBenchmark de ordenamiento guardado con exito en %s"RESET"\n", SORT_BENCHMARK_ROUTE);
+    free_deportistas_array(baseArray, count);
+    printf(BG_GREEN "\nBenchmark de ordenamiento guardado con exito en %s\n" RESET, SORT_BENCHMARK_ROUTE);
 }
-

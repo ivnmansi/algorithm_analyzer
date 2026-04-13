@@ -1,3 +1,5 @@
+# Script de gnuplot para los resultados de benchmarks.
+
 set datafile separator ","
 set terminal pngcairo font "Arial,12" size 1200,720
 set xlabel 'n'
@@ -8,21 +10,21 @@ set key outside
 set style data lines
 set key autotitle columnhead
 
-search_file = 'db/search_benchmark.csv'
-sort_file   = 'db/sort_benchmark.csv'
+searchFile = 'db/search_benchmark.csv'
+sortFile   = 'db/sort_benchmark.csv'
 
-search_out = 'plots/search_benchmark.png'
-sort_out   = 'plots/sort_benchmark.png'
+searchOut = 'plots/search_benchmark.png'
+sortOut   = 'plots/sort_benchmark.png'
 
-has_search = int(system(sprintf("test -f '%s' && echo 1 || echo 0", search_file)))
-has_sort   = int(system(sprintf("test -f '%s' && echo 1 || echo 0", sort_file)))
+hasSearch = int(system(sprintf("test -f '%s' && echo 1 || echo 0", searchFile)))
+hasSort   = int(system(sprintf("test -f '%s' && echo 1 || echo 0", sortFile)))
 
-if (!has_search) {
-	print sprintf("ERROR: no existe %s", search_file)
+if (!hasSearch) {
+	print sprintf("ERROR: no existe %s", searchFile)
 	exit 1
 }
-if (!has_sort) {
-	print sprintf("ERROR: no existe %s", sort_file)
+if (!hasSort) {
+	print sprintf("ERROR: no existe %s", sortFile)
 	exit 1
 }
 
@@ -32,25 +34,25 @@ set ytics
 set key outside
 
 # Search benchmark
-set output search_out
+set output searchOut
 set title 'Search benchmark'
-nf = int(system(sprintf("awk -F, 'NR==2{print NF; exit}' \"%s\"", search_file)))
-if (nf < 2) {
-	print sprintf("ERROR: CSV inválido (pocas columnas): %s", search_file)
+columnCount = int(system(sprintf("awk -F, 'NR==2{print NF; exit}' \"%s\"", searchFile)))
+if (columnCount < 2) {
+	print sprintf("ERROR: CSV invalido (pocas columnas): %s", searchFile)
 	exit 1
 } else {
-	plot for [col=2:nf] search_file using 1:col lw 2 title columnhead(col)
+	plot for [col=2:columnCount] searchFile using 1:col lw 2 title columnhead(col)
 }
 unset output
 
 # Sort benchmark
-set output sort_out
+set output sortOut
 set title 'Sort benchmark'
-nf = int(system(sprintf("awk -F, 'NR==2{print NF; exit}' \"%s\"", sort_file)))
-if (nf < 2) {
-	print sprintf("ERROR: CSV inválido (pocas columnas): %s", sort_file)
+columnCount = int(system(sprintf("awk -F, 'NR==2{print NF; exit}' \"%s\"", sortFile)))
+if (columnCount < 2) {
+	print sprintf("ERROR: CSV invalido (pocas columnas): %s", sortFile)
 	exit 1
 } else {
-	plot for [col=2:nf] sort_file using 1:col lw 2 title columnhead(col)
+	plot for [col=2:columnCount] sortFile using 1:col lw 2 title columnhead(col)
 }
 unset output

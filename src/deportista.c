@@ -1,28 +1,45 @@
 /**
  * @file deportista.c
- * @brief
- *
+ * @brief Implementacion del tipo Deportista y sus utilidades.
  */
 
 #include "deportista.h"
 
-Deportista createDeportista(int id, char* nombre, char* equipo, float puntaje, int competencias){
-    Deportista newDeportista = malloc(sizeof(Deportista_));
-    if(newDeportista == NULL){
+/**
+ * @brief Crea una instancia dinamica de deportista.
+ *
+ * @param id Identificador del deportista.
+ * @param nombre Nombre del deportista.
+ * @param equipo Equipo del deportista.
+ * @param puntaje Puntaje del deportista.
+ * @param competencias Cantidad de competencias.
+ * @return Deportista Instancia creada o NULL si falla la reserva.
+ */
+Deportista create_deportista(int id, char *nombre, char *equipo, float puntaje, int competencias)
+{
+    Deportista newDeportista = malloc(sizeof(DeportistaData));
+
+    if(newDeportista == NULL) {
         return NULL;
     }
-    newDeportista->ID = id;
-    newDeportista->Nombre = nombre;
-    newDeportista->Equipo = equipo;
-    newDeportista->Puntaje = puntaje;
-    newDeportista->Competencias = competencias;
+
+    newDeportista->id = id;
+    newDeportista->nombre = nombre;
+    newDeportista->equipo = equipo;
+    newDeportista->puntaje = puntaje;
+    newDeportista->competencias = competencias;
 
     return newDeportista;
 }
 
-void deleteDeportista(Deportista deportista){
-    free(deportista->Nombre);
-    free(deportista->Equipo);
+void delete_deportista(Deportista deportista)
+{
+    if(deportista == NULL) {
+        return;
+    }
+
+    free(deportista->nombre);
+    free(deportista->equipo);
     free(deportista);
 }
 
@@ -33,20 +50,21 @@ void deleteDeportista(Deportista deportista){
  */
 void print_deportista(Deportista deportista)
 {
-    if(deportista == NULL){
+    if(deportista == NULL) {
         return;
     }
 
     printf("ID: %d | Nombre: %s | Equipo: %s | Puntaje: %.2f | Competencias: %d\n",
-        deportista->ID,
-        deportista->Nombre,
-        deportista->Equipo,
-        deportista->Puntaje,
-        deportista->Competencias);
+        deportista->id,
+        deportista->nombre,
+        deportista->equipo,
+        deportista->puntaje,
+        deportista->competencias);
 }
 
-void swap_deportistas(Deportista* a, Deportista* b){
-    Deportista tmp = *a;
-    *a = *b;
-    *b = tmp;
+void swap_deportistas(Deportista *left, Deportista *right)
+{
+    Deportista tmp = *left;
+    *left = *right;
+    *right = tmp;
 }
