@@ -69,5 +69,7 @@
 
 void printDeportistasArray(Deportista *deportistas, int rankingAmount);
 
+void print_error(const char* message);
+
 
 #endif
