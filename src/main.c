@@ -36,10 +36,10 @@ int main(int argc, char **argv)
                 int cantidadDatos = atoi(optarg);
                 if (MIN_DATA > cantidadDatos  || cantidadDatos > MAX_DATA)
                 {
-                    printf("Cantidad de datos debe estar entre 10 y 100000\n");
+                    printf("Cantidad de datos invalida. Debe ser mínimo %d y máximo %d\n", MIN_DATA, MAX_DATA);
                     return 1;
                 }
-                printf("Cantidad de datos a generar: %d\n", atoi(optarg));
+                printf("\nGenerando" BOLD ORANGE " %d " RESET "datos...\n\n", atoi(optarg));
                 createDeportistasCSV(cantidadDatos);
                 break;
             }

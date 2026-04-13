@@ -17,6 +17,7 @@
 #include "csv.h"
 #include "searching.h"
 #include "sorting.h"
+#include "print_format.h"
 
 #define NAMES_LENGHT_MIN 3
 #define NAMES_LENGHT_MAX 8
@@ -26,8 +27,8 @@
 #define MIN_SCORE 0.0
 #define MAX_COMPETITIONS 45
 #define MIN_COMPETITIONS 1
-#define INTERVAL_SIZE 10
-#define EXPERIMENT_REPEATS 20
+#define INTERVAL_SIZE 20
+#define EXPERIMENT_REPEATS 5
 #define CSV_ROUTE "./db/deportistas.csv"
 #define SEARCH_BENCHMARK_ROUTE "./db/search_benchmark.csv"
 #define SORT_BENCHMARK_ROUTE "./db/sort_benchmark.csv"

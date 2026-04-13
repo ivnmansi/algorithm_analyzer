@@ -11,6 +11,42 @@
 #include <stdio.h>
 
 /**
+ * @brief Limpia la línea actual en la consola y mueve el cursor al inicio de la línea. Utilizada para actualizar la barra de progreso durante los benchmarks sin imprimir nuevas líneas.
+ * 
+ */
+static void progress_clear_line(void)
+{
+    printf(CURSOR_HOME CLEAR_LINE);
+    fflush(stdout);
+}
+
+/**
+ * @brief Actualiza barra de progreso por consola, mostrando el nombre del benchmark, el intervalo actual, el tamaño de datos, la repetición actual y la etapa del proceso. Utilizada para mostrar el progreso durante los benchmarks de búsqueda y ordenamiento.
+ * 
+ * @param benchmarkName Nombre del benchmark (ej: "search" o "sort")
+ * @param intervalIndex Índice del intervalo actual
+ * @param intervalCount Cantidad de intervalos
+ * @param n Tamaño de los datos
+ * @param repeatIndex Índice de la repetición actual
+ * @param repeatCount Cantidad de repeticiones
+ * @param stage Etapa del proceso
+ */
+static void progress_update_line(const char *benchmarkName, int intervalIndex, int intervalCount, int n, int repeatIndex, int repeatCount, const char *stage)
+{
+    printf(
+        CURSOR_HOME CLEAR_LINE DIM"%s | %d/%d | n=%d | rep %d/%d | %s" RESET,
+        benchmarkName,
+        intervalIndex,
+        intervalCount,
+        n,
+        repeatIndex,
+        repeatCount,
+        stage
+    );
+    fflush(stdout);
+}
+
+/**
  * @brief Funcion que duplica una cadena de caracteres, utilizada para clonar los datos de deportistas en los benchmarks.
  * @param srcString String a duplicar.
  * @return char* Cadena duplicada o NULL si hubo un error.
@@ -134,8 +170,14 @@ void run_search_benchmark()
     }
 
     fprintf(out, "n,promedio_secuencial_s,promedio_binaria_s\n");
+
+    printf(BOLD_BLUE "\n=== Search benchmark ===\n" RESET);
+    printf(DIM "Archivo: %s | intervalos: %d | repeticiones: %d\n\n" RESET, SEARCH_BENCHMARK_ROUTE, intervals, EXPERIMENT_REPEATS);
+
     printf("n \t | \t secuencial(s) \t | \t binaria(s)\n");
-    printf("-------------------------------------------------------------------\n");
+    printf(ASCII_HR "\n");
+
+    printf(HIDE_CURSOR);
 
     // inicio de experimento
     for(int i = 0; i < intervals; i++){
@@ -147,8 +189,12 @@ void run_search_benchmark()
             int targetId;
             clock_t start, end;
 
+            progress_update_line("search", i + 1, intervals, n, j + 1, EXPERIMENT_REPEATS, "clonando");
+
             Deportista* work = clone_deportistas_array(baseArray, n);
             if(work == NULL){
+                progress_clear_line();
+                printf(SHOW_CURSOR);
                 printf("No se pudieron clonar deportistas para el benchmark\n");
                 freeDeportistasArray(baseArray, count);
                 fclose(out);
@@ -158,7 +204,7 @@ void run_search_benchmark()
             // Se toma el ID del ultimo elemento arbitrariamente (asi se asegura que existe)
             targetId = work[n - 1]->ID;
 
-            // sequential search
+            progress_update_line("search", i + 1, intervals, n, j + 1, EXPERIMENT_REPEATS, "secuencial");
             start = clock();
             sequential_search_by_id(work, n, targetId);
             end = clock();
@@ -166,6 +212,8 @@ void run_search_benchmark()
 
             // binary search necesita que el arreglo esté ordenado
             insertion_sort_deportistas(work, n, SORT_BY_ID, ASCENDING);
+
+            progress_update_line("search", i + 1, intervals, n, j + 1, EXPERIMENT_REPEATS, "binaria");
             start = clock();
             binary_search_by_id(work, n, targetId);
             end = clock();
@@ -178,11 +226,16 @@ void run_search_benchmark()
         double avgBin = total_bin / EXPERIMENT_REPEATS;
 
         fprintf(out, "%d,%.10f,%.10f\n", n, avgSeq, avgBin);
+        progress_clear_line();
         printf("%d \t | \t %.10f \t | \t %.10f\n", n, avgSeq, avgBin);
 
     }
 
+    progress_clear_line();
+    printf(SHOW_CURSOR);
+
     fclose(out);
+    freeDeportistasArray(baseArray, count);
     printf(BG_GREEN"\nBenchmark guardado correctamente en %s\n"RESET, SEARCH_BENCHMARK_ROUTE);
 }
 
@@ -217,12 +270,19 @@ void run_sort_benchmark()
         return;
     }
     fprintf(out, "n,promedio_insertion_s,promedio_bubble_s,promedio_selection_s,promedio_cocktail_s\n");
+
+    printf(BOLD_BLUE "\n=== Sort benchmark ===\n" RESET);
+    printf(DIM "Archivo: %s | intervalos: %d | repeticiones: %d\n\n" RESET, SORT_BENCHMARK_ROUTE, intervals, EXPERIMENT_REPEATS);
+
     printf("n \t | \t insertion(s) \t | \t bubble(s) \t | \t selection(s) \t | \t cocktail(s)\n");
-    printf("---------------------------------------------------------------------------------------------------------------\n");
+    printf(ASCII_HR_WIDE "\n");
+
+    printf(HIDE_CURSOR);
 
     // inicio de benchmark
     for(int i = 0; i < intervals; i++){
         int n = (i == intervals - 1) ? count : (step_size * (i + 1));
+
         double totalIns = 0.0;
         double totalBub = 0.0;
         double totalSel = 0.0;
@@ -233,8 +293,11 @@ void run_sort_benchmark()
             clock_t start, end;
 
             // insertion sort
+            progress_update_line("sort", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, "insertion");
             work = clone_deportistas_array(baseArray, n);
             if(work == NULL){
+                progress_clear_line();
+                printf(SHOW_CURSOR);
                 printf("No se pudieron clonar deportistas para el benchmark\n");
                 freeDeportistasArray(baseArray, count);
                 fclose(out);
@@ -247,8 +310,11 @@ void run_sort_benchmark()
             freeDeportistasArray(work, n);
 
             // bubble sort optimizado
+            progress_update_line("sort", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, "bubble");
             work = clone_deportistas_array(baseArray, n);
             if(work == NULL){
+                progress_clear_line();
+                printf(SHOW_CURSOR);
                 printf("No se pudieron clonar deportistas para el benchmark\n");
                 freeDeportistasArray(baseArray, count);
                 fclose(out);
@@ -261,8 +327,11 @@ void run_sort_benchmark()
             freeDeportistasArray(work, n);
 
             // selection sort
+            progress_update_line("sort", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, "selection");
             work = clone_deportistas_array(baseArray, n);
             if(work == NULL){
+                progress_clear_line();
+                printf(SHOW_CURSOR);
                 printf("No se pudieron clonar deportistas para el benchmark\n");
                 freeDeportistasArray(baseArray, count);
                 fclose(out);
@@ -275,8 +344,11 @@ void run_sort_benchmark()
             freeDeportistasArray(work, n);
             
             // cocktail shaker sort
+            progress_update_line("sort", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, "cocktail");
             work = clone_deportistas_array(baseArray, n);
             if(work == NULL){
+                progress_clear_line();
+                printf(SHOW_CURSOR);
                 printf("No se pudieron clonar deportistas para el benchmark\n");
                 freeDeportistasArray(baseArray, count);
                 fclose(out);
@@ -304,6 +376,7 @@ void run_sort_benchmark()
             totalCoc
         );
 
+        progress_clear_line();
         printf(
             "%d \t | \t %.10f \t | \t %.10f \t | \t %.10f \t | \t %.10f\n",
             n,
@@ -313,6 +386,9 @@ void run_sort_benchmark()
             totalCoc
         );
     }
+
+    progress_clear_line();
+    printf(SHOW_CURSOR);
 
     fclose(out);
     freeDeportistasArray(baseArray, count);

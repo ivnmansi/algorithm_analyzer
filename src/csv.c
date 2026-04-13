@@ -1,6 +1,7 @@
 #include "csv.h"
 #include "base.h"
 #include "generator.h"
+#include "print_format.h"
 
 void createDeportistasCSV(int cantidadDatos){
     int i;
@@ -51,8 +52,9 @@ void createDeportistasCSV(int cantidadDatos){
     }
 
     free(ids);
-    //printf("Archivo CSV creado con éxito.\n");
+    printf(BG_GREEN"Archivo CSV creado con éxito.\n"RESET);
     fclose(f);
+
 }
 
 static char* duplicateString(const char* src){

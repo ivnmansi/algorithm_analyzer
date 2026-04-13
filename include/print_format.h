@@ -14,6 +14,18 @@
 #define BG_DEFAULT "\033[49m"
 #define NO_BG "\033[49m"
 
+// Control de terminal
+#define CLEAR_LINE "\033[2K"      // limpia línea actual
+#define CURSOR_HOME "\r"          // vuelve al inicio de la línea
+#define HIDE_CURSOR "\033[?25l"
+#define SHOW_CURSOR "\033[?25h"
+
+// ASCII helpers
+#define ASCII_HR "-------------------------------------------------------------------"
+#define ASCII_HR_WIDE "---------------------------------------------------------------------------------------------------------------"
+#define ASCII_OK "[OK]"
+#define ASCII_FAIL "[FAIL]"
+
 #define RED "\033[31m"
 #define GREEN "\033[32m"
 #define YELLOW "\033[33m"
