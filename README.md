@@ -80,7 +80,8 @@ Los mensajes de error visibles para el usuario se centralizan en `print_error(..
 - `sorting.c` y algoritmos asociados: encapsulan comparacion y ordenamiento.
 - `sequential_search.c` y `binary_search.c`: implementan las busquedas por ID.
 
-## Notas
+## Avisos
 
 - Los archivos del informe en LaTeX se conservan aparte del flujo principal del programa.
 - Los CSV y PNG generados pueden cambiar al ejecutar benchmarks o generar nuevos datos.
+- Se recomienda realizar una generación de no más de 10.000 datos, para apreciar correctamente los gráficos, ya que este es el punto ideal para ver diferencias y a la vez que no se demore en realizar los benchmarks (el programa fue probado con hasta 100.000 datos generados aleatoriamente, pero para conseguir resultados hay que esperar un tiempo de más de 30 minutos o 1 hora dependiendo del equipo donde se ejecute el programa, y se comprobó que la diferencia con 10.000 datos al momento de analizar los gráficos era mínima).

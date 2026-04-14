@@ -1,1 +1,119 @@
 \chapter{Desarrollo}
+
+\section{Diseño general del sistema}
+El sistema fue diseñado para gestionar información de deportistas de forma simple y modular, permitiendo generar datos, cargarlos desde archivos CSV y aplicar sobre ellos distintas operaciones de ordenamiento, búsqueda y análisis experimental. Para facilitar su desarrollo y comprensión, la implementación se organizó en componentes que separan la representación de los datos, la generación y carga de registros, y las funcionalidades principales ofrecidas por el programa.
+\subsection{Estructura de datos de los deportistas}
+
+\subsection{Generación y carga de datos}
+
+\subsection{Funcionalidades del sistema}
+Una vez cargados los datos de los deportistas, el programa permite realizar distintas operaciones sobre ellos por medio de parametros de línea de comandos. Entre las funcionalidades principales se encuentra el ordenamiento de los datos de los deportistas de manera ascendente o descendente utilizando el ID, puntaje, cantidad de competencias, nombre y equipo. Para ello, el usuario puede seleccionar alguno de los algoritmos de ordenamiento implementados en el programa.
+
+Otra funcionalidad importante es la búsqueda de deportistas por ID, la cual puede realizarse mediante búsqueda secuencial o búsqueda binaria iterativa. Esto permite comparar no solo la correctitud de ambos métodos, sino también su desempeño bajo distintas condiciones de entrada.
+
+Además, el sistema permite mostrar un ranking con los mejores \(N\) deportistas de acuerdo a su puntaje, lo que logra una aplicación práctica del ordenamiento de datos dentro del contexto del problema planteado.
+
+Junto con las operaciones anteriores, el programa incorpora la ejecución de benchmarks para medir el tiempo de ejecución de los algoritmos de ordenamiento y búsqueda. Estos resultados se almacenan en archivos CSV y posteriormente pueden utilizarse para generar gráficos comparativos mediante gnuplot, facilitando el análisis experimental de los algoritmos implementados.
+
+En conjunto, estas funcionalidades permiten que el sistema no solo cumpla con los requerimientos prácticos de manipulación de datos, sino que también sirva como base para el estudio comparativo del comportamiento de los algoritmos.
+\section{Implementación de algoritmos de ordenamiento}
+Para el procesamiento de los datos de deportistas, el sistema incorpora distintos algoritmos de ordenamiento iterativos, cada uno con características particulares en cuanto a funcionamiento y rendimiento. Su implementación permite ordenar los datos según diversos criterios y, al mismo tiempo, comparar su comportamiento en distintos casos de prueba desde un punto de vista teórico y experimental.
+
+\subsection{Bubble Sort optimizado}
+
+\subsection{Insertion Sort}
+Insertion Sort es un algoritmo de ordenamiento iterativo que construye gradualmente una porción ordenada del arreglo. Su funcionamiento consiste en tomar cada elemento y ubicarlo en la posición que le corresponde dentro de los elementos previamente ordenados, desplazando hacia la derecha aquellos que sean mayores o menores según el criterio de orden elegido.
+
+En este proyecto, su implementación permite ordenar los registros de deportistas de acuerdo con distintos campos, como ID, puntaje, competencias, nombre y equipo.
+
+Una de las ventajas de Insertion Sort es su buen desempeño cuando los datos ya se encuentran ordenados o casi ordenados, ya que en esos casos realiza pocos desplazamientos. En cambio, cuando la entrada se encuentra en el peor caso, su cantidad de comparaciones y movimientos aumenta considerablemente.
+
+Teóricamente, Insertion Sort presenta complejidad \(O(n)\) en el mejor caso y \(O(n^2)\) tanto en el caso promedio como en el peor caso.
+
+\subsection{Selection Sort optimizado}
+
+\subsection{Cocktail Shaker Sort}
+
+\section{Implementación de algoritmos de búsqueda}
+Además de ordenar los datos, el sistema permite localizar deportistas específicos a partir de su ID mediante algoritmos de búsqueda iterativos. Para ello se implementaron dos enfoques distintos, lo que permite comparar una estrategia de búsqueda directa sobre datos no ordenados con otra más eficiente que requiere un arreglo previamente ordenado.
+
+\subsection{Búsqueda secuencial}
+La búsqueda secuencial consiste en recorrer los elementos del arreglo uno a uno hasta encontrar el valor buscado o llegar al final de la estructura. En este proyecto, su implementación se utiliza para localizar deportistas a partir de su ID, comparando el identificador buscado con el ID de cada registro almacenado en memoria.
+
+Una de las principales ventajas de este método es su simplicidad, ya que no requiere que los datos se encuentren previamente ordenados. Esto la convierte en una alternativa directa para trabajar sobre el arreglo cargado desde el archivo CSV. Sin embargo, su rendimiento depende de la posición del elemento buscado, y en el peor caso debe revisar todos los registros antes de concluir que el deportista existe o no existe en el arreglo.
+
+Desde el punto de vista teórico, su complejidad temporal en el peor caso es \(O(n)\), ya que el número de comparaciones crece linealmente con la cantidad de elementos.
+
+\subsection{Búsqueda binaria}
+
+\section{Benchmarks, generación y visualización de resultados}
+\subsection{Diseño de benchmarks}
+Con el fin de evaluar empíricamente la eficiencia de los algoritmos implementados, el sistema incorpora benchmarks para ordenamiento y búsqueda. Estas pruebas permiten medir los tiempos de ejecución en distintos tamaños de entrada, utilizando múltiples repeticiones por cada tamaño con el fin de reducir la variabilidad de los resultados.
+
+En el benchmark de ordenamiento se consideran los cuatro algoritmos implementados: Bubble Sort optimizado, Insertion Sort, Selection Sort optimizado y Cocktail Shaker Sort. En el benchmark de búsqueda se evalúan búsqueda secuencial y búsqueda binaria. Los tiempos obtenidos se almacenan en archivos CSV, lo que facilita su análisis y representación gráfica.
+
+El diseño de estas pruebas busca relacionar el comportamiento observado en la práctica con la complejidad teórica de cada algoritmo, permitiendo comparar sus diferencias de rendimiento bajo condiciones controladas.
+
+\subsection{Casos de prueba}
+Para los algoritmos de ordenamiento se consideraron tres escenarios de entrada: mejor caso, caso promedio y peor caso. El mejor caso se representó mediante arreglos previamente ordenados en forma ascendente según ID, el caso promedio mediante arreglos mezclados aleatoriamente y el peor caso mediante arreglos ordenados en forma descendente. Esta separación permite observar cómo cambia el rendimiento de cada algoritmo según la disposición inicial de los datos.
+
+En el caso de los algoritmos de búsqueda, se evaluó el peor caso. Para búsqueda secuencial, este escenario se simuló utilizando un ID inexistente, obligando al algoritmo a recorrer completamente el arreglo antes de concluir que el elemento no está presente. Para búsqueda binaria, se utilizó igualmente un ID inexistente, pero sobre un arreglo previamente ordenado, asegurando así una medición consistente de su comportamiento en este caso.
+
+Gracias a estos casos de prueba, fue posible comparar de manera más precisa el desempeño de cada algoritmo y relacionarlo con lo esperado desde el análisis teórico.
+
+\subsection{Generación de gráficos}
+Los resultados obtenidos en los benchmarks se almacenaron en archivos CSV, los cuales posteriormente fueron utilizados para generar gráficos comparativos mediante \texttt{gnuplot}. Esta etapa permitió representar visualmente la evolución de los tiempos de ejecución en función del tamaño de entrada, facilitando la interpretación de los resultados experimentales.
+
+Para la búsqueda se generó un gráfico correspondiente al peor caso, mientras que para los algoritmos de ordenamiento se elaboraron gráficos independientes para mejor caso, caso promedio y peor caso. De esta forma, fue posible comparar con mayor claridad las diferencias de comportamiento entre los algoritmos en cada escenario analizado.
+
+En particular, para el gráfico del mejor caso de los algoritmos de ordenamiento se utilizó una escala logarítmica en el eje vertical. Esta decisión se tomó debido a que, en dicho escenario, algunos algoritmos presentan tiempos de ejecución muy cercanos entre sí y considerablemente menores que otros, lo que dificulta apreciar visualmente sus diferencias en una escala lineal. El uso de escala logarítmica permitió distinguir de manera más clara estas variaciones y realizar una comparación más significativa entre los algoritmos.
+
+\section{Análisis de resultados}
+
+\subsection{Benchmark de búsqueda: Peor caso}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Fig/search_worst_benchmark.png}
+    \caption{Benchmark de búsqueda en peor caso}
+    \label{fig:search_worst_benchmark}
+\end{figure}
+
+En la Figura \ref{fig:search_worst_benchmark} se aprecia que la búsqueda secuencial presenta una mayor demora que la búsqueda binaria en el peor caso. Esto coincide con la complejidad temporal esperada, ya que la búsqueda secuencial tiene costo \(O(n)\) al revisar todos los elementos cuando el ID buscado no existe, mientras que la búsqueda binaria mantiene un costo \(O(\log n)\) al dividir el espacio de búsqueda en cada iteración. Por ello, a medida que aumenta la cantidad de datos, la diferencia entre ambos algoritmos se vuelve más evidente y confirma la ventaja de la búsqueda binaria sobre arreglos ordenados.
+
+\subsection{Benchmark de ordenamiento: Mejor caso}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Fig/sort_best_benchmark.png}
+    \caption{Benchmark de ordenamiento en mejor caso}
+    \label{fig:sort_best_benchmark}
+\end{figure}
+
+En la Figura \ref{fig:sort_best_benchmark}, Bubble Sort optimizado e Insertion Sort presentan los menores tiempos de ejecución, seguidos por Cocktail Shaker Sort, mientras que Selection Sort queda claramente por encima del resto. Este comportamiento es coherente con la teoría: Insertion Sort tiene complejidad \(O(n)\) en el mejor caso, y Bubble Sort optimizado también se acerca a \(O(n)\) al detectar rápidamente que el arreglo ya está ordenado. Cocktail Shaker Sort mejora notablemente en este escenario, aunque conserva una leve sobrecarga adicional. En cambio, Selection Sort mantiene un costo \(O(n^2)\), ya que continúa realizando la mayoría de sus comparaciones aunque los datos ya estén ordenados.
+
+\subsection{Benchmark de ordenamiento: Caso promedio}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Fig/sort_average_benchmark.png}
+    \caption{Benchmark de ordenamiento en caso promedio}
+    \label{fig:sort_average_benchmark}
+\end{figure}
+
+La Figura \ref{fig:sort_average_benchmark} muestra que Insertion Sort obtiene el mejor rendimiento en el caso promedio, seguido por Selection Sort, mientras que Bubble Sort optimizado y Cocktail Shaker Sort presentan tiempos mayores. En este escenario, los cuatro algoritmos tienen complejidad temporal \(O(n^2)\), pero se diferencian en la cantidad de comparaciones e intercambios realizados. Insertion Sort logra un mejor comportamiento práctico al insertar cada elemento en su posición de forma relativamente eficiente, mientras que Selection Sort se mantiene competitivo por efectuar pocos intercambios. Por su parte, Bubble Sort y Cocktail Shaker Sort aumentan más rápidamente su tiempo de ejecución debido a la mayor cantidad de movimientos necesarios sobre datos desordenados.
+
+\subsection{Benchmark de ordenamiento: Peor caso}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Fig/sort_worst_benchmark.png}
+    \caption{Benchmark de ordenamiento en peor caso}
+    \label{fig:sort_worst_benchmark}
+\end{figure}
+
+En la Figura \ref{fig:sort_worst_benchmark} se observa que Selection Sort presenta los menores tiempos dentro del peor caso, seguido por Insertion Sort, mientras que Bubble Sort optimizado y Cocktail Shaker Sort son los más lentos, siendo este último el de mayor demora. Teóricamente, los cuatro algoritmos conservan complejidad \(O(n^2)\) en este escenario, pero sus constantes de ejecución son distintas. Selection Sort mantiene un comportamiento más estable porque realiza pocos intercambios, incluso cuando la entrada está invertida. Insertion Sort empeora por el aumento de desplazamientos necesarios, mientras que Bubble Sort y Cocktail Shaker Sort exhiben un crecimiento mayor debido a la gran cantidad de comparaciones e intercambios requeridos para reordenar completamente el arreglo.
+
+\newpage
+\subsection{Análisis general}
+En términos generales, los resultados experimentales obtenidos son coherentes con el comportamiento teórico esperado para los algoritmos implementados. En el caso de búsqueda, la búsqueda binaria mostró un mejor rendimiento que la búsqueda secuencial en el peor caso, lo que coincide con sus complejidades \(O(\log n)\) y \(O(n)\), respectivamente. Esto confirma que, cuando los datos se encuentran ordenados, la búsqueda binaria resulta considerablemente más eficiente para tamaños de entrada crecientes.
+
+En los algoritmos de ordenamiento también se observaron tendencias acordes a la teoría. En el mejor caso, Bubble Sort optimizado e Insertion Sort presentaron los menores tiempos, mientras que Selection Sort se mantuvo claramente por encima debido a que continúa realizando un gran número de comparaciones incluso cuando la entrada ya está ordenada. En el caso promedio, Insertion Sort obtuvo el mejor desempeño general, seguido por Selection Sort, mientras que Bubble Sort y Cocktail Shaker Sort presentaron mayores tiempos de ejecución. Finalmente, en el peor caso, Selection Sort mostró un comportamiento más estable, mientras que Bubble Sort y Cocktail Shaker Sort concentraron las mayores demoras.
+
+En conjunto, estos resultados permiten concluir que no todos los algoritmos con la misma complejidad asintótica presentan el mismo rendimiento en la práctica. Aunque varios de ellos comparten complejidad \(O(n^2)\), las diferencias en la cantidad de comparaciones, desplazamientos e intercambios afectan directamente su desempeño real. De esta manera, el análisis experimental complementa la teoría y permite entender con mayor claridad las ventajas y limitaciones de cada algoritmo en distintos escenarios.
