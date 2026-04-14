@@ -28,6 +28,25 @@ static char *duplicate_string(const char *src)
 }
 
 /**
+ * @brief Mezcla un arreglo de deportistas usando Fisher-Yates.
+ *
+ * @param deportistas Arreglo a mezclar.
+ * @param count Cantidad de elementos del arreglo.
+ */
+static void shuffle_deportistas_array(Deportista *deportistas, int count)
+{
+    if(deportistas == NULL || count < 2) {
+        return;
+    }
+
+    for(int i = count - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+
+        swap_deportistas(&deportistas[i], &deportistas[j]);
+    }
+}
+
+/**
  * @brief Genera un CSV con datos aleatorios de deportistas.
  *
  * @param dataAmount Cantidad de registros a crear.
@@ -35,8 +54,7 @@ static char *duplicate_string(const char *src)
 void create_deportistas_csv(int dataAmount)
 {
     int i;
-    int isOrdered;
-    int *ids;
+    Deportista *deportistas;
     FILE *file = fopen(CSV_ROUTE, "w");
 
     if(file == NULL) {
@@ -44,38 +62,14 @@ void create_deportistas_csv(int dataAmount)
         return;
     }
 
-    ids = malloc(sizeof(int) * dataAmount);
-    if(ids == NULL) {
+    deportistas = malloc(sizeof(Deportista) * dataAmount);
+    if(deportistas == NULL) {
         fclose(file);
         print_error(ERROR_MEMORY_ALLOCATION_FAILED, NULL);
         return;
     }
 
     for(i = 0; i < dataAmount; i++) {
-        ids[i] = i;
-    }
-
-    fisher_yates_shuffle(ids, dataAmount);
-
-    if(dataAmount > 1) {
-        isOrdered = 1;
-
-        for(i = 0; i < dataAmount; i++) {
-            if(ids[i] != i) {
-                isOrdered = 0;
-                break;
-            }
-        }
-
-        if(isOrdered == 1) {
-            fisher_yates_shuffle(ids, dataAmount);
-        }
-    }
-
-    fprintf(file, "ID,Nombre,Equipo,Puntaje,Competencias\n");
-
-    for(i = 0; i < dataAmount; i++) {
-        int id = ids[i];
         char *nombre = generate_random_name();
         char *equipo = generate_random_team();
         float puntaje = generate_random_score();
@@ -84,18 +78,50 @@ void create_deportistas_csv(int dataAmount)
         if(nombre == NULL || equipo == NULL) {
             free(nombre);
             free(equipo);
-            free(ids);
+
+            for(int j = 0; j < i; j++) {
+                delete_deportista(deportistas[j]);
+            }
+
+            free(deportistas);
             fclose(file);
             print_error(ERROR_MEMORY_ALLOCATION_FAILED, NULL);
             return;
         }
 
-        fprintf(file, "%d,%s,%s,%.2f,%d\n", id, nombre, equipo, puntaje, competencias);
-        free(nombre);
-        free(equipo);
+        deportistas[i] = create_deportista(i + 1, nombre, equipo, puntaje, competencias);
+        if(deportistas[i] == NULL) {
+            free(nombre);
+            free(equipo);
+
+            for(int j = 0; j < i; j++) {
+                delete_deportista(deportistas[j]);
+            }
+
+            free(deportistas);
+            fclose(file);
+            print_error(ERROR_MEMORY_ALLOCATION_FAILED, NULL);
+            return;
+        }
     }
 
-    free(ids);
+    shuffle_deportistas_array(deportistas, dataAmount);
+
+    fprintf(file, "ID,Nombre,Equipo,Puntaje,Competencias\n");
+
+    for(i = 0; i < dataAmount; i++) {
+        fprintf(
+            file,
+            "%d,%s,%s,%.2f,%d\n",
+            deportistas[i]->id,
+            deportistas[i]->nombre,
+            deportistas[i]->equipo,
+            deportistas[i]->puntaje,
+            deportistas[i]->competencias
+        );
+    }
+
+    free_deportistas_array(deportistas, dataAmount);
     fclose(file);
     printf(BG_GREEN "Archivo CSV creado con exito.\n" RESET);
 }
