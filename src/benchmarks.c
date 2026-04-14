@@ -7,6 +7,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef enum {
+    BENCHMARK_CASE_BEST = 0,
+    BENCHMARK_CASE_AVERAGE = 1,
+    BENCHMARK_CASE_WORST = 2
+} BenchmarkCase;
+
 /**
  * @brief Limpia la linea actual en la consola.
  */
@@ -40,6 +46,120 @@ static void progress_update_line(const char *benchmarkName, int intervalIndex, i
         stage
     );
     fflush(stdout);
+}
+
+/**
+ * @brief Devuelve el nombre legible de un caso experimental.
+ *
+ * @param benchmarkCase Caso experimental.
+ * @return const char* Nombre asociado.
+ */
+static const char *get_case_name(BenchmarkCase benchmarkCase)
+{
+    switch(benchmarkCase) {
+        case BENCHMARK_CASE_BEST:
+            return "mejor";
+        case BENCHMARK_CASE_AVERAGE:
+            return "promedio";
+        case BENCHMARK_CASE_WORST:
+            return "peor";
+        default:
+            return "desconocido";
+    }
+}
+
+/**
+ * @brief Mezcla un arreglo de deportistas usando Fisher-Yates.
+ *
+ * @param deportistas Arreglo a mezclar.
+ * @param count Cantidad de elementos.
+ */
+static void shuffle_deportistas_array(Deportista *deportistas, int count)
+{
+    if(deportistas == NULL || count < 2) {
+        return;
+    }
+
+    for(int i = count - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+
+        swap_deportistas(&deportistas[i], &deportistas[j]);
+    }
+}
+
+/**
+ * @brief Prepara un arreglo para medir un caso experimental de ordenamiento.
+ *
+ * @param deportistas Arreglo a preparar.
+ * @param count Cantidad de elementos.
+ * @param benchmarkCase Caso experimental requerido.
+ */
+static void prepare_sort_case(Deportista *deportistas, int count, BenchmarkCase benchmarkCase)
+{
+    if(deportistas == NULL || count < 2) {
+        return;
+    }
+
+    switch(benchmarkCase) {
+        case BENCHMARK_CASE_BEST:
+            insertion_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING);
+            break;
+        case BENCHMARK_CASE_AVERAGE:
+            shuffle_deportistas_array(deportistas, count);
+            break;
+        case BENCHMARK_CASE_WORST:
+            insertion_sort_deportistas(deportistas, count, SORT_BY_ID, DESCENDING);
+            break;
+        default:
+            break;
+    }
+}
+
+/**
+ * @brief Busca un ID inexistente para medir el peor caso de busqueda.
+ *
+ * @param deportistas Arreglo de deportistas.
+ * @param count Cantidad de elementos.
+ * @return int ID que no esta presente en el arreglo.
+ */
+static int get_missing_target_id(Deportista *deportistas, int count)
+{
+    int maxId;
+
+    if(deportistas == NULL || count <= 0 || deportistas[0] == NULL) {
+        return -1;
+    }
+
+    maxId = deportistas[0]->id;
+
+    for(int i = 1; i < count; i++) {
+        if(deportistas[i] != NULL && deportistas[i]->id > maxId) {
+            maxId = deportistas[i]->id;
+        }
+    }
+
+    return maxId + 1;
+}
+
+/**
+ * @brief Prepara el arreglo para medir el peor caso de busqueda.
+ *
+ * @param deportistas Arreglo a preparar.
+ * @param count Cantidad de elementos.
+ * @param algorithm Algoritmo de busqueda a ejecutar.
+ * @return int ID ausente para provocar el peor caso.
+ */
+static int prepare_search_worst_case(Deportista *deportistas, int count, SearchAlgorithm algorithm)
+{
+    if(deportistas == NULL || count <= 0) {
+        return -1;
+    }
+
+    if(algorithm == BINARY_SEARCH) {
+        insertion_sort_deportistas(deportistas, count, SORT_BY_ID, ASCENDING);
+    }
+
+    return get_missing_target_id(deportistas, count);
 }
 
 /**
@@ -192,60 +312,73 @@ void run_search_benchmark()
         return;
     }
 
-    fprintf(out, "n,promedio_secuencial_s,promedio_binaria_s\n");
+    fprintf(out, "n,peor_secuencial_s,peor_binaria_s\n");
 
-    printf(BOLD_BLUE "\n=== Search benchmark ===\n" RESET);
+    printf(BOLD_BLUE "\n=== Search benchmark (peor caso) ===\n" RESET);
     printf(DIM "Archivo: %s | intervalos: %d | repeticiones: %d\n\n" RESET, SEARCH_BENCHMARK_ROUTE, intervals, EXPERIMENT_REPEATS);
 
-    printf("n \t | \t secuencial(s) \t | \t binaria(s)\n");
+    printf("n \t | \t peor secuencial(s) \t | \t peor binaria(s)\n");
     printf(ASCII_HR "\n");
 
     printf(HIDE_CURSOR);
 
     for(int i = 0; i < intervals; i++) {
         int n = (i == intervals - 1) ? count : (stepSize * (i + 1));
-        double totalSeq = 0.0;
-        double totalBin = 0.0;
+        double totalWorstSeq = 0.0;
+        double totalWorstBin = 0.0;
 
         for(int j = 0; j < EXPERIMENT_REPEATS; j++) {
             int targetId;
             clock_t start;
             clock_t end;
-            Deportista *work;
+            Deportista *workSequential;
+            Deportista *workBinary;
 
-            progress_update_line("search", i + 1, intervals, n, j + 1, EXPERIMENT_REPEATS, "clonando");
+            progress_update_line("search", i + 1, intervals, n, j + 1, EXPERIMENT_REPEATS, "peor secuencial");
 
-            work = clone_deportistas_array(baseArray, n);
-            if(work == NULL) {
+            workSequential = clone_deportistas_array(baseArray, n);
+            if(workSequential == NULL) {
                 handle_benchmark_memory_error(baseArray, count, out);
             }
 
-            targetId = work[n - 1]->id;
-
-            progress_update_line("search", i + 1, intervals, n, j + 1, EXPERIMENT_REPEATS, "secuencial");
-            start = clock();
-            sequential_search_by_id(work, n, targetId);
-            end = clock();
-            totalSeq += (double)(end - start) / CLOCKS_PER_SEC;
-
-            insertion_sort_deportistas(work, n, SORT_BY_ID, ASCENDING);
-
-            progress_update_line("search", i + 1, intervals, n, j + 1, EXPERIMENT_REPEATS, "binaria");
+            targetId = prepare_search_worst_case(workSequential, n, SEQUENTIAL_SEARCH);
+            if(targetId < 0) {
+                free_deportistas_array(workSequential, n);
+                handle_benchmark_memory_error(baseArray, count, out);
+            }
 
             start = clock();
-            binary_search_by_id(work, n, targetId);
+            sequential_search_by_id(workSequential, n, targetId);
             end = clock();
-            totalBin += (double)(end - start) / CLOCKS_PER_SEC;
+            totalWorstSeq += (double)(end - start) / CLOCKS_PER_SEC;
+            free_deportistas_array(workSequential, n);
 
-            free_deportistas_array(work, n);
+            progress_update_line("search", i + 1, intervals, n, j + 1, EXPERIMENT_REPEATS, "peor binaria");
+
+            workBinary = clone_deportistas_array(baseArray, n);
+            if(workBinary == NULL) {
+                handle_benchmark_memory_error(baseArray, count, out);
+            }
+
+            targetId = prepare_search_worst_case(workBinary, n, BINARY_SEARCH);
+            if(targetId < 0) {
+                free_deportistas_array(workBinary, n);
+                handle_benchmark_memory_error(baseArray, count, out);
+            }
+
+            start = clock();
+            binary_search_by_id(workBinary, n, targetId);
+            end = clock();
+            totalWorstBin += (double)(end - start) / CLOCKS_PER_SEC;
+            free_deportistas_array(workBinary, n);
         }
 
-        double avgSeq = totalSeq / EXPERIMENT_REPEATS;
-        double avgBin = totalBin / EXPERIMENT_REPEATS;
+        double avgWorstSeq = totalWorstSeq / EXPERIMENT_REPEATS;
+        double avgWorstBin = totalWorstBin / EXPERIMENT_REPEATS;
 
-        fprintf(out, "%d,%.10f,%.10f\n", n, avgSeq, avgBin);
+        fprintf(out, "%d,%.10f,%.10f\n", n, avgWorstSeq, avgWorstBin);
         progress_clear_line();
-        printf("%d \t | \t %.10f \t | \t %.10f\n", n, avgSeq, avgBin);
+        printf("%d \t | \t %.10f \t | \t %.10f\n", n, avgWorstSeq, avgWorstBin);
     }
 
     progress_clear_line();
@@ -288,105 +421,135 @@ void run_sort_benchmark()
         return;
     }
 
-    fprintf(out, "n,promedio_insertion_s,promedio_bubble_s,promedio_selection_s,promedio_cocktail_s\n");
+    fprintf(
+        out,
+        "n,"
+        "mejor_insertion_s,mejor_bubble_s,mejor_selection_s,mejor_cocktail_s,"
+        "promedio_insertion_s,promedio_bubble_s,promedio_selection_s,promedio_cocktail_s,"
+        "peor_insertion_s,peor_bubble_s,peor_selection_s,peor_cocktail_s\n"
+    );
 
     printf(BOLD_BLUE "\n=== Sort benchmark ===\n" RESET);
     printf(DIM "Archivo: %s | intervalos: %d | repeticiones: %d\n\n" RESET, SORT_BENCHMARK_ROUTE, intervals, EXPERIMENT_REPEATS);
 
-    printf("n \t | \t insertion(s) \t | \t bubble(s) \t | \t selection(s) \t | \t cocktail(s)\n");
+    printf("n \t | caso \t | insertion(s) \t | bubble(s) \t | selection(s) \t | cocktail(s)\n");
     printf(ASCII_HR_WIDE "\n");
 
     printf(HIDE_CURSOR);
 
     for(int i = 0; i < intervals; i++) {
         int n = (i == intervals - 1) ? count : (stepSize * (i + 1));
+        double caseTotals[3][4] = {{0.0}};
 
-        double totalInsertion = 0.0;
-        double totalBubble = 0.0;
-        double totalSelection = 0.0;
-        double totalCocktail = 0.0;
+        for(int caseIndex = BENCHMARK_CASE_BEST; caseIndex <= BENCHMARK_CASE_WORST; caseIndex++) {
+            BenchmarkCase benchmarkCase = (BenchmarkCase)caseIndex;
 
-        for(int r = 0; r < EXPERIMENT_REPEATS; r++) {
-            Deportista *work;
-            clock_t start;
-            clock_t end;
+            for(int r = 0; r < EXPERIMENT_REPEATS; r++) {
+                Deportista *work;
+                clock_t start;
+                clock_t end;
 
-            progress_update_line("sort", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, "insertion");
-            work = clone_deportistas_array(baseArray, n);
+                progress_update_line("sort", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, get_case_name(benchmarkCase));
+                work = clone_deportistas_array(baseArray, n);
 
-            if(work == NULL) {
-                handle_benchmark_memory_error(baseArray, count, out);
+                if(work == NULL) {
+                    handle_benchmark_memory_error(baseArray, count, out);
+                }
+
+                prepare_sort_case(work, n, benchmarkCase);
+                start = clock();
+                insertion_sort_deportistas(work, n, SORT_BY_ID, ASCENDING);
+                end = clock();
+                caseTotals[caseIndex][0] += (double)(end - start) / CLOCKS_PER_SEC;
+                free_deportistas_array(work, n);
+
+                work = clone_deportistas_array(baseArray, n);
+                if(work == NULL) {
+                    handle_benchmark_memory_error(baseArray, count, out);
+                }
+
+                prepare_sort_case(work, n, benchmarkCase);
+                start = clock();
+                optimized_bubble_sort(work, n, SORT_BY_ID, ASCENDING);
+                end = clock();
+                caseTotals[caseIndex][1] += (double)(end - start) / CLOCKS_PER_SEC;
+                free_deportistas_array(work, n);
+
+                work = clone_deportistas_array(baseArray, n);
+                if(work == NULL) {
+                    handle_benchmark_memory_error(baseArray, count, out);
+                }
+
+                prepare_sort_case(work, n, benchmarkCase);
+                start = clock();
+                selection_sort(work, n, SORT_BY_ID, ASCENDING);
+                end = clock();
+                caseTotals[caseIndex][2] += (double)(end - start) / CLOCKS_PER_SEC;
+                free_deportistas_array(work, n);
+
+                work = clone_deportistas_array(baseArray, n);
+                if(work == NULL) {
+                    handle_benchmark_memory_error(baseArray, count, out);
+                }
+
+                prepare_sort_case(work, n, benchmarkCase);
+                start = clock();
+                cocktail_shaker_sort(work, n, SORT_BY_ID, ASCENDING);
+                end = clock();
+                caseTotals[caseIndex][3] += (double)(end - start) / CLOCKS_PER_SEC;
+                free_deportistas_array(work, n);
             }
 
-            start = clock();
-            insertion_sort_deportistas(work, n, SORT_BY_ID, ASCENDING);
-            end = clock();
-            totalInsertion += (double)(end - start) / CLOCKS_PER_SEC;
-            free_deportistas_array(work, n);
-
-            progress_update_line("sort", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, "bubble");
-            work = clone_deportistas_array(baseArray, n);
-
-            if(work == NULL) {
-                handle_benchmark_memory_error(baseArray, count, out);
+            for(int algorithmIndex = 0; algorithmIndex < 4; algorithmIndex++) {
+                caseTotals[caseIndex][algorithmIndex] /= EXPERIMENT_REPEATS;
             }
-
-            start = clock();
-            optimized_bubble_sort(work, n, SORT_BY_ID, ASCENDING);
-            end = clock();
-            totalBubble += (double)(end - start) / CLOCKS_PER_SEC;
-            free_deportistas_array(work, n);
-
-            progress_update_line("sort", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, "selection");
-            work = clone_deportistas_array(baseArray, n);
-
-            if(work == NULL) {
-                handle_benchmark_memory_error(baseArray, count, out);
-            }
-
-            start = clock();
-            selection_sort(work, n, SORT_BY_ID, ASCENDING);
-            end = clock();
-            totalSelection += (double)(end - start) / CLOCKS_PER_SEC;
-            free_deportistas_array(work, n);
-
-            progress_update_line("sort", i + 1, intervals, n, r + 1, EXPERIMENT_REPEATS, "cocktail");
-            work = clone_deportistas_array(baseArray, n);
-
-            if(work == NULL) {
-                handle_benchmark_memory_error(baseArray, count, out);
-            }
-
-            start = clock();
-            cocktail_shaker_sort(work, n, SORT_BY_ID, ASCENDING);
-            end = clock();
-            totalCocktail += (double)(end - start) / CLOCKS_PER_SEC;
-            free_deportistas_array(work, n);
         }
-
-        totalInsertion /= EXPERIMENT_REPEATS;
-        totalBubble /= EXPERIMENT_REPEATS;
-        totalSelection /= EXPERIMENT_REPEATS;
-        totalCocktail /= EXPERIMENT_REPEATS;
 
         fprintf(
             out,
-            "%d,%.10f,%.10f,%.10f,%.10f\n",
+            "%d,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f,%.10f\n",
             n,
-            totalInsertion,
-            totalBubble,
-            totalSelection,
-            totalCocktail
+            caseTotals[BENCHMARK_CASE_BEST][0],
+            caseTotals[BENCHMARK_CASE_BEST][1],
+            caseTotals[BENCHMARK_CASE_BEST][2],
+            caseTotals[BENCHMARK_CASE_BEST][3],
+            caseTotals[BENCHMARK_CASE_AVERAGE][0],
+            caseTotals[BENCHMARK_CASE_AVERAGE][1],
+            caseTotals[BENCHMARK_CASE_AVERAGE][2],
+            caseTotals[BENCHMARK_CASE_AVERAGE][3],
+            caseTotals[BENCHMARK_CASE_WORST][0],
+            caseTotals[BENCHMARK_CASE_WORST][1],
+            caseTotals[BENCHMARK_CASE_WORST][2],
+            caseTotals[BENCHMARK_CASE_WORST][3]
         );
 
         progress_clear_line();
         printf(
-            "%d \t | \t %.10f \t | \t %.10f \t | \t %.10f \t | \t %.10f\n",
+            "%d \t | %s \t | %.10f \t | %.10f \t | %.10f \t | %.10f\n",
             n,
-            totalInsertion,
-            totalBubble,
-            totalSelection,
-            totalCocktail
+            get_case_name(BENCHMARK_CASE_BEST),
+            caseTotals[BENCHMARK_CASE_BEST][0],
+            caseTotals[BENCHMARK_CASE_BEST][1],
+            caseTotals[BENCHMARK_CASE_BEST][2],
+            caseTotals[BENCHMARK_CASE_BEST][3]
+        );
+        printf(
+            "%d \t | %s \t | %.10f \t | %.10f \t | %.10f \t | %.10f\n",
+            n,
+            get_case_name(BENCHMARK_CASE_AVERAGE),
+            caseTotals[BENCHMARK_CASE_AVERAGE][0],
+            caseTotals[BENCHMARK_CASE_AVERAGE][1],
+            caseTotals[BENCHMARK_CASE_AVERAGE][2],
+            caseTotals[BENCHMARK_CASE_AVERAGE][3]
+        );
+        printf(
+            "%d \t | %s \t | %.10f \t | %.10f \t | %.10f \t | %.10f\n",
+            n,
+            get_case_name(BENCHMARK_CASE_WORST),
+            caseTotals[BENCHMARK_CASE_WORST][0],
+            caseTotals[BENCHMARK_CASE_WORST][1],
+            caseTotals[BENCHMARK_CASE_WORST][2],
+            caseTotals[BENCHMARK_CASE_WORST][3]
         );
     }
 

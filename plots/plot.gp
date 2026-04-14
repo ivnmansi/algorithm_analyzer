@@ -1,11 +1,17 @@
 # Script de gnuplot para los resultados de benchmarks.
 
 set datafile separator ","
-set terminal pngcairo font "Arial,12" size 1200,720
-set xlabel 'n'
+set terminal pngcairo noenhanced font "Arial,16" size 1600,900
+set xlabel 'Cantidad de deportistas (n)'
 set ylabel 'Tiempo promedio (s)'
 set grid
 set key outside
+set border linewidth 2
+set grid linewidth 1.5
+set key font ",14"
+set xlabel font ",16"
+set ylabel font ",16"
+set tics font ",13"
 
 set style data lines
 set key autotitle columnhead
@@ -13,8 +19,10 @@ set key autotitle columnhead
 searchFile = 'db/search_benchmark.csv'
 sortFile   = 'db/sort_benchmark.csv'
 
-searchOut = 'plots/search_benchmark.png'
-sortOut   = 'plots/sort_benchmark.png'
+searchOut      = 'plots/search_worst_benchmark.png'
+sortBestOut    = 'plots/sort_best_benchmark.png'
+sortAverageOut = 'plots/sort_average_benchmark.png'
+sortWorstOut   = 'plots/sort_worst_benchmark.png'
 
 hasSearch = int(system(sprintf("test -f '%s' && echo 1 || echo 0", searchFile)))
 hasSort   = int(system(sprintf("test -f '%s' && echo 1 || echo 0", sortFile)))
@@ -33,26 +41,50 @@ set xtics
 set ytics
 set key outside
 
-# Search benchmark
+# Search benchmark: peor caso
 set output searchOut
-set title 'Search benchmark'
+set title 'Search benchmark - peor caso'
 columnCount = int(system(sprintf("awk -F, 'NR==2{print NF; exit}' \"%s\"", searchFile)))
-if (columnCount < 2) {
+if (columnCount < 3) {
 	print sprintf("ERROR: CSV invalido (pocas columnas): %s", searchFile)
 	exit 1
 } else {
-	plot for [col=2:columnCount] searchFile using 1:col lw 2 title columnhead(col)
+	plot for [col=2:3] searchFile using 1:col lw 4 title columnhead(col)
 }
 unset output
 
-# Sort benchmark
-set output sortOut
-set title 'Sort benchmark'
+# Sort benchmark: mejor caso
+set output sortBestOut
+set title 'Sort benchmark - mejor caso'
+set logscale y
 columnCount = int(system(sprintf("awk -F, 'NR==2{print NF; exit}' \"%s\"", sortFile)))
-if (columnCount < 2) {
+if (columnCount < 13) {
 	print sprintf("ERROR: CSV invalido (pocas columnas): %s", sortFile)
 	exit 1
 } else {
-	plot for [col=2:columnCount] sortFile using 1:col lw 2 title columnhead(col)
+	plot for [col=2:5] sortFile using 1:col lw 4 title columnhead(col)
+}
+unset output
+unset logscale y
+
+# Sort benchmark: caso promedio
+set output sortAverageOut
+set title 'Sort benchmark - caso promedio'
+if (columnCount < 13) {
+	print sprintf("ERROR: CSV invalido (pocas columnas): %s", sortFile)
+	exit 1
+} else {
+	plot for [col=6:9] sortFile using 1:col lw 4 title columnhead(col)
+}
+unset output
+
+# Sort benchmark: peor caso
+set output sortWorstOut
+set title 'Sort benchmark - peor caso'
+if (columnCount < 13) {
+	print sprintf("ERROR: CSV invalido (pocas columnas): %s", sortFile)
+	exit 1
+} else {
+	plot for [col=10:13] sortFile using 1:col lw 4 title columnhead(col)
 }
 unset output
