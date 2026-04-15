@@ -19,26 +19,44 @@ void optimized_selection_sort(Deportista *deportistas, int length, SortCriteria 
         return;
     }
 
-    for(int i = 0; i < length - 1; i++) {
-        int selectedIndex = i;
+    for(int left = 0, right = length - 1; left < right; left++, right--) {
+        int minIndex = left;
+        int maxIndex = left;
 
-        for(int j = i + 1; j < length; j++) {
-            int cmp = compare_by_criteria(deportistas[selectedIndex], deportistas[j], criteria);
-            int shouldSelect;
-
-            if(order == ASCENDING) {
-                shouldSelect = (cmp > 0);
-            } else {
-                shouldSelect = (cmp < 0);
+        for(int i = left + 1; i <= right; i++) {
+            if(compare_by_criteria(deportistas[i], deportistas[minIndex], criteria) < 0) {
+                minIndex = i;
             }
 
-            if(shouldSelect) {
-                selectedIndex = j;
+            if(compare_by_criteria(deportistas[i], deportistas[maxIndex], criteria) > 0) {
+                maxIndex = i;
             }
         }
 
-        if(selectedIndex != i) {
-            swap_deportistas(&deportistas[i], &deportistas[selectedIndex]);
+        if(order == ASCENDING) {
+            if(minIndex != left) {
+                swap_deportistas(&deportistas[left], &deportistas[minIndex]);
+            }
+
+            if(maxIndex == left) {
+                maxIndex = minIndex;
+            }
+
+            if(maxIndex != right) {
+                swap_deportistas(&deportistas[right], &deportistas[maxIndex]);
+            }
+        } else {
+            if(maxIndex != left) {
+                swap_deportistas(&deportistas[left], &deportistas[maxIndex]);
+            }
+
+            if(minIndex == left) {
+                minIndex = maxIndex;
+            }
+
+            if(minIndex != right) {
+                swap_deportistas(&deportistas[right], &deportistas[minIndex]);
+            }
         }
     }
 }
