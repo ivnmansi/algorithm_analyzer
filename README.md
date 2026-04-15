@@ -1,6 +1,8 @@
-# algoritmos_tarea1
+# Algorithm Analyzer
 
-Proyecto en C para generar datos de deportistas, ejecutar busquedas y ordenamientos sobre esos datos, y medir el tiempo de ejecucion de cada algoritmo mediante benchmarks.
+![C](https://img.shields.io/badge/C-C11-blue) ![Build](https://img.shields.io/badge/build-make-success) ![LaTeX](https://img.shields.io/badge/docs-LaTeX-9cf)
+
+Proyecto en C para generar datos de deportistas, ejecutar busquedas y ordenamientos sobre esos datos, y medir el tiempo de ejecucion de cada algoritmo mediante benchmarks. Hecho para la asignatura de Diseño de Algoritmos 2026/1.
 
 ## Funcionalidad
 
@@ -11,24 +13,30 @@ Proyecto en C para generar datos de deportistas, ejecutar busquedas y ordenamien
 - Benchmarks de busqueda y ordenamiento con exportacion a CSV.
 - Generacion de graficos a partir de los resultados con `gnuplot`.
 
+## Requisitos
+
+- `gcc` y `make`.
+- (Opcional) `gnuplot` para generar graficos.
+- (Opcional) TeX Live + `latexmk` + `biber` para compilar el informe.
+
 ## Compilacion
 
 ```bash
 make
 ```
 
-El ejecutable queda en `build/tarea_1_algoritmos.out`.
+El ejecutable queda en `build/algorithm_analyzer.out`.
 
 ## Uso
 
 ```bash
-./build/tarea_1_algoritmos.out -h
-./build/tarea_1_algoritmos.out -g 1000
-./build/tarea_1_algoritmos.out -t
-./build/tarea_1_algoritmos.out -i 42
-./build/tarea_1_algoritmos.out -r 10
-./build/tarea_1_algoritmos.out -b
-./build/tarea_1_algoritmos.out -s
+./build/algorithm_analyzer.out -h
+./build/algorithm_analyzer.out -g 1000
+./build/algorithm_analyzer.out -t
+./build/algorithm_analyzer.out -i 42
+./build/algorithm_analyzer.out -r 10
+./build/algorithm_analyzer.out -b
+./build/algorithm_analyzer.out -s
 make plot
 ```
 
@@ -41,6 +49,7 @@ Tambien se mantiene el alias `-id [valor]` por compatibilidad con el flujo previ
 - `db/`: datos CSV de entrada y resultados de benchmarks.
 - `plots/`: script de `gnuplot` y graficos generados.
 - `docs/`: informe del proyecto en LaTeX.
+
 
 ## Criterios de codificacion aplicados
 
