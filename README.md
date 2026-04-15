@@ -16,7 +16,8 @@ Proyecto en C para generar datos de deportistas, ejecutar busquedas y ordenamien
 ## Requisitos
 
 - `gcc` y `make`.
-- (Opcional) `gnuplot` para generar graficos.
+- `gnuplot` para generar graficos.
+- (Opcional) `doxygen` para generar documentacion del codigo.
 - (Opcional) TeX Live + `latexmk` + `biber` para compilar el informe.
 
 ## Compilacion
@@ -49,6 +50,16 @@ Tambien se mantiene el alias `-id [valor]` por compatibilidad con el flujo previ
 - `db/`: datos CSV de entrada y resultados de benchmarks.
 - `plots/`: script de `gnuplot` y graficos generados.
 - `docs/`: informe del proyecto en LaTeX.
+
+## Documentacion (Doxygen)
+
+Para generar la documentacion del codigo con Doxygen:
+
+```bash
+doxygen Doxyfile
+```
+
+La salida HTML queda en `docs/doxygen/html/index.html`.
 
 
 ## Criterios de codificacion aplicados

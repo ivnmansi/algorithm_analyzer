@@ -14,7 +14,7 @@ La estructura de datos utilizada para representar a cada deportista se definió 
 Cada parámetro permite almacenar información, la cual puede ser utilizada para ordenar o buscar a los deportistas según distintos criterios. Esta estructura se implementó utilizando un \texttt{struct} en C, lo que facilita su manejo y acceso a los campos correspondientes durante las operaciones de ordenamiento y búsqueda.
 
 \subsection{Generación y carga de datos}
-La generación de datos de los parámetros asociados a deportistas se realizó mediante distintas funciones, las cuales permiten crear u obtener estos registros de manera "aleatoria". La generación de un nombre se realizó permitiendo seleccionar aleatoriamente letras de un conjunto predefinido, escogiendo un tamaño de 3 a 8 caracteres. Para el equipo, se seleccionó aleatoriamente entre un conjunto específico de equipos de Esports. El ID se generó en forma incremental, asegurando la unicidad de cada registro. Por otro lado, el puntaje y la cantidad de competencias se generaron utilizando funciones de generación de números aleatorios dentro de rangos predefinidos. Esta metodología permitió crear un conjunto de datos variado y representativo para probar las funcionalidades del sistema. Posterior a la creación de los registros, estos se desordenaron utilizando el algoritmo de Fisher-Yates para garantizar que los datos no se encuentren en un orden específico, lo que es fundamental para evaluar correctamente el desempeño de los algoritmos de ordenamiento y búsqueda implementados. Finalmente, los registros generados se almacenaron en un archivo CSV, lo que facilita su posterior carga y manipulación dentro del programa.
+La generación de datos de los parámetros asociados a deportistas se realizó mediante distintas funciones, las cuales permiten crear u obtener estos registros de manera 'aleatoria'. La generación de un nombre se realizó permitiendo seleccionar aleatoriamente letras de un conjunto predefinido, escogiendo un tamaño de 3 a 8 caracteres. Para el equipo, se seleccionó aleatoriamente entre un conjunto específico de equipos de Esports. El ID se generó en forma incremental, asegurando la unicidad de cada registro. Por otro lado, el puntaje y la cantidad de competencias se generaron utilizando funciones de generación de números aleatorios dentro de rangos predefinidos. Esta metodología permitió crear un conjunto de datos variado y representativo para probar las funcionalidades del sistema. Posterior a la creación de los registros, estos se desordenaron utilizando el algoritmo de Fisher-Yates para garantizar que los datos no se encuentren en un orden específico, lo que es fundamental para evaluar correctamente el desempeño de los algoritmos de ordenamiento y búsqueda implementados. Finalmente, los registros generados se almacenaron en un archivo CSV, lo que facilita su posterior carga y manipulación dentro del programa.
 
 
 \subsection{Funcionalidades del sistema}
@@ -95,7 +95,7 @@ En particular, para el gráfico del mejor caso de los algoritmos de ordenamiento
 \subsection{Benchmark de búsqueda: Peor caso}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{Fig/search_worst_benchmark.png}
+    \includegraphics[width=0.95\textwidth]{Fig/search_worst_benchmark}
     \caption{Benchmark de búsqueda en peor caso}
     \label{fig:search_worst_benchmark}
 \end{figure}
@@ -105,7 +105,7 @@ En la Figura \ref{fig:search_worst_benchmark} se aprecia que la búsqueda secuen
 \subsection{Benchmark de ordenamiento: Mejor caso}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{Fig/sort_best_benchmark.png}
+    \includegraphics[width=0.95\textwidth]{Fig/sort_best_benchmark}
     \caption{Benchmark de ordenamiento en mejor caso}
     \label{fig:sort_best_benchmark}
 \end{figure}
@@ -115,7 +115,7 @@ En la Figura \ref{fig:sort_best_benchmark}, Bubble Sort optimizado e Insertion S
 \subsection{Benchmark de ordenamiento: Caso promedio}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{Fig/sort_average_benchmark.png}
+    \includegraphics[width=0.95\textwidth]{Fig/sort_average_benchmark}
     \caption{Benchmark de ordenamiento en caso promedio}
     \label{fig:sort_average_benchmark}
 \end{figure}
@@ -125,7 +125,7 @@ La Figura \ref{fig:sort_average_benchmark} muestra que Insertion Sort obtiene el
 \subsection{Benchmark de ordenamiento: Peor caso}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.95\textwidth]{Fig/sort_worst_benchmark.png}
+    \includegraphics[width=0.95\textwidth]{Fig/sort_worst_benchmark}
     \caption{Benchmark de ordenamiento en peor caso}
     \label{fig:sort_worst_benchmark}
 \end{figure}

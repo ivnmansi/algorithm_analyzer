@@ -13,11 +13,11 @@
  * @brief Estructura que representa a un deportista.
  */
 typedef struct DeportistaData {
-    int id;
-    char *nombre;
-    char *equipo;
-    float puntaje;
-    int competencias;
+    int id;             /**< Identificador unico del deportista. */
+    char *nombre;       /**< Nombre (cadena dinamica, propiedad del deportista). */
+    char *equipo;       /**< Equipo (cadena dinamica, propiedad del deportista). */
+    float puntaje;      /**< Puntaje acumulado del deportista. */
+    int competencias;   /**< Cantidad de competencias disputadas. */
 } DeportistaData;
 
 /**
@@ -27,6 +27,9 @@ typedef DeportistaData *Deportista;
 
 /**
  * @brief Crea un deportista con los datos entregados.
+ *
+ * La funcion reserva memoria para la estructura y para las cadenas entregadas.
+ * El deportista resultante debe liberarse con delete_deportista().
  *
  * @param id Identificador unico del deportista.
  * @param nombre Nombre del deportista.
@@ -45,6 +48,8 @@ Deportista create_deportista(
 
 /**
  * @brief Libera la memoria asociada a un deportista.
+ *
+ * Libera la estructura y las cadenas internas asociadas.
  *
  * @param deportista Deportista a destruir.
  */

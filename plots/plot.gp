@@ -1,7 +1,7 @@
 # Script de gnuplot para los resultados de benchmarks.
 
 set datafile separator ","
-set terminal pngcairo noenhanced font "Arial,16" size 1600,900
+set terminal pdfcairo noenhanced font "Arial,16" size 16cm,9cm
 set xlabel 'Cantidad de deportistas (n)'
 set ylabel 'Tiempo promedio (s)'
 set grid
@@ -19,10 +19,10 @@ set key autotitle columnhead
 searchFile = 'db/search_benchmark.csv'
 sortFile   = 'db/sort_benchmark.csv'
 
-searchOut      = 'plots/search_worst_benchmark.png'
-sortBestOut    = 'plots/sort_best_benchmark.png'
-sortAverageOut = 'plots/sort_average_benchmark.png'
-sortWorstOut   = 'plots/sort_worst_benchmark.png'
+searchOut      = 'plots/search_worst_benchmark.pdf'
+sortBestOut    = 'plots/sort_best_benchmark.pdf'
+sortAverageOut = 'plots/sort_average_benchmark.pdf'
+sortWorstOut   = 'plots/sort_worst_benchmark.pdf'
 
 hasSearch = int(system(sprintf("test -f '%s' && echo 1 || echo 0", searchFile)))
 hasSort   = int(system(sprintf("test -f '%s' && echo 1 || echo 0", sortFile)))
