@@ -32,6 +32,11 @@ Deportista create_deportista(int id, char *nombre, char *equipo, float puntaje, 
     return newDeportista;
 }
 
+/**
+ * @brief Elimina una instancia de deportista, liberando la memoria asociada.
+ * 
+ * @param deportista Deportista a eliminar.
+ */
 void delete_deportista(Deportista deportista)
 {
     if(deportista == NULL) {
@@ -62,6 +67,12 @@ void print_deportista(Deportista deportista)
         deportista->competencias);
 }
 
+/**
+ * @brief Intercambia los datos de dos deportistas.
+ * 
+ * @param left Deportista izquierdo a intercambiar.
+ * @param right Deportista derecho a intercambiar.
+ */
 void swap_deportistas(Deportista *left, Deportista *right)
 {
     Deportista tmp = *left;

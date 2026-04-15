@@ -5,6 +5,12 @@
 
 #include "print_format.h"
 
+/**
+ * @brief Imprime una lista de deportistas.
+ * 
+ * @param deportistas Array de deportistas a imprimir.
+ * @param rankingAmount Número de deportistas a imprimir.
+ */
 void print_deportistas_array(Deportista *deportistas, int rankingAmount)
 {
     if(deportistas == NULL || rankingAmount <= 0) {
