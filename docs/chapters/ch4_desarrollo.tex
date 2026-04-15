@@ -3,11 +3,22 @@
 \section{Diseño general del sistema}
 El sistema fue diseñado para gestionar información de deportistas de forma simple y modular, permitiendo generar datos, cargarlos desde archivos CSV y aplicar sobre ellos distintas operaciones de ordenamiento, búsqueda y análisis experimental. Para facilitar su desarrollo y comprensión, la implementación se organizó en componentes que separan la representación de los datos, la generación y carga de registros, y las funcionalidades principales ofrecidas por el programa.
 \subsection{Estructura de datos de los deportistas}
+La estructura de datos utilizada para representar a cada deportista se definió como una estructura con campos específicos para almacenar distinta información; estos campos corresponden a:
+\begin{itemize}
+    \item \texttt{ID:} Identificador único del deportista.
+    \item \texttt{Nombre:} Nombre completo del deportista.
+    \item \texttt{Equipo:} Equipo al que pertenece.
+    \item \texttt{Puntaje:} Puntuación total acumulada.
+    \item \texttt{Competencias:} Número de competencias en las que ha participado.
+\end{itemize}
+Cada parámetro permite almacenar información, la cual puede ser utilizada para ordenar o buscar a los deportistas según distintos criterios. Esta estructura se implementó utilizando un \texttt{struct} en C, lo que facilita su manejo y acceso a los campos correspondientes durante las operaciones de ordenamiento y búsqueda.
 
 \subsection{Generación y carga de datos}
+La generación de datos de los parámetros asociados a deportistas se realizó mediante distintas funciones, las cuales permiten crear u obtener estos registros de manera "aleatoria". La generación de un nombre se realizó permitiendo seleccionar aleatoriamente letras de un conjunto predefinido, escogiendo un tamaño de 3 a 8 caracteres. Para el equipo, se seleccionó aleatoriamente entre un conjunto específico de equipos de Esports. El ID se generó en forma incremental, asegurando la unicidad de cada registro. Por otro lado, el puntaje y la cantidad de competencias se generaron utilizando funciones de generación de números aleatorios dentro de rangos predefinidos. Esta metodología permitió crear un conjunto de datos variado y representativo para probar las funcionalidades del sistema. Posterior a la creación de los registros, estos se desordenaron utilizando el algoritmo de Fisher-Yates para garantizar que los datos no se encuentren en un orden específico, lo que es fundamental para evaluar correctamente el desempeño de los algoritmos de ordenamiento y búsqueda implementados. Finalmente, los registros generados se almacenaron en un archivo CSV, lo que facilita su posterior carga y manipulación dentro del programa.
+
 
 \subsection{Funcionalidades del sistema}
-Una vez cargados los datos de los deportistas, el programa permite realizar distintas operaciones sobre ellos por medio de parametros de línea de comandos. Entre las funcionalidades principales se encuentra el ordenamiento de los datos de los deportistas de manera ascendente o descendente utilizando el ID, puntaje, cantidad de competencias, nombre y equipo. Para ello, el usuario puede seleccionar alguno de los algoritmos de ordenamiento implementados en el programa.
+Una vez cargados los datos de los deportistas, el programa permite realizar distintas operaciones sobre ellos por medio de parámetros de línea de comandos. Entre las funcionalidades principales se encuentra el ordenamiento de los datos de los deportistas de manera ascendente o descendente utilizando el ID, puntaje, cantidad de competencias, nombre y equipo. Para ello, el usuario puede seleccionar alguno de los algoritmos de ordenamiento implementados en el programa.
 
 Otra funcionalidad importante es la búsqueda de deportistas por ID, la cual puede realizarse mediante búsqueda secuencial o búsqueda binaria iterativa. Esto permite comparar no solo la correctitud de ambos métodos, sino también su desempeño bajo distintas condiciones de entrada.
 
@@ -19,8 +30,8 @@ En conjunto, estas funcionalidades permiten que el sistema no solo cumpla con lo
 \section{Implementación de algoritmos de ordenamiento}
 Para el procesamiento de los datos de deportistas, el sistema incorpora distintos algoritmos de ordenamiento iterativos, cada uno con características particulares en cuanto a funcionamiento y rendimiento. Su implementación permite ordenar los datos según diversos criterios y, al mismo tiempo, comparar su comportamiento en distintos casos de prueba desde un punto de vista teórico y experimental.
 
-\subsection{Bubble Sort optimizado}
 
+\label{subsec:bubblesort}
 \subsection{Insertion Sort}
 Insertion Sort es un algoritmo de ordenamiento iterativo que construye gradualmente una porción ordenada del arreglo. Su funcionamiento consiste en tomar cada elemento y ubicarlo en la posición que le corresponde dentro de los elementos previamente ordenados, desplazando hacia la derecha aquellos que sean mayores o menores según el criterio de orden elegido.
 
@@ -33,6 +44,8 @@ Teóricamente, Insertion Sort presenta complejidad \(O(n)\) en el mejor caso y \
 \subsection{Selection Sort optimizado}
 
 \subsection{Cocktail Shaker Sort}
+Este algoritmo corresponde a una variación de Bubble Sort (\ref{subsec:bubblesort}), la cual altera su rendimiento en ciertos casos. Cocktail Shaker Sort, o Bidirectional Bubble Sort, actúa recorriendo el arreglo en ambas direcciones durante cada iteración, es decir, desde izquierda a derecha y luego de derecha a izquierda. Esto permite que los elementos más grandes se desplacen hacia el final del arreglo y los más pequeños hacia el inicio de manera más eficiente, especialmente cuando la entrada se encuentra en un orden parcialmente invertido. Sin embargo, en el mejor caso, cuando los datos ya están ordenados, su rendimiento se ve afectado por la necesidad de realizar dos pasadas completas para verificar que el arreglo está ordenado, lo que resulta en un tiempo de ejecución mayor en comparación con otros algoritmos como Insertion Sort o Bubble Sort optimizado. En el caso promedio y peor caso, Cocktail Shaker Sort mantiene una complejidad \(O(n^2)\), aunque su rendimiento puede ser mejor que Bubble Sort en ciertos escenarios debido a su capacidad para mover elementos en ambas direcciones.
+Al igual que los demás algoritmos de ordenamiento implementados en este proyecto, Cocktail Shaker Sort es capaz de ordenar los registros de deportistas según distintos criterios y sentidos, lo que permite evaluar su desempeño en función de la disposición inicial de los datos y compararlo con otras estrategias de ordenamiento.
 
 \section{Implementación de algoritmos de búsqueda}
 Además de ordenar los datos, el sistema permite localizar deportistas específicos a partir de su ID mediante algoritmos de búsqueda iterativos. Para ello se implementaron dos enfoques distintos, lo que permite comparar una estrategia de búsqueda directa sobre datos no ordenados con otra más eficiente que requiere un arreglo previamente ordenado.
@@ -44,7 +57,8 @@ Una de las principales ventajas de este método es su simplicidad, ya que no req
 
 Desde el punto de vista teórico, su complejidad temporal en el peor caso es \(O(n)\), ya que el número de comparaciones crece linealmente con la cantidad de elementos.
 
-\subsection{Búsqueda binaria}
+\subsection{Búsqueda binaria iterativa}
+La búsqueda binaria iterativa es un algoritmo eficiente para localizar elementos en un arreglo previamente ordenado. Su funcionamiento se basa en dividir el espacio de búsqueda en cada iteración, comparando el valor buscado con el elemento central del arreglo. Si el valor coincide, se ha encontrado el elemento; si el valor es menor, se continúa la búsqueda en la mitad inferior del arreglo; y si es mayor, se busca en la mitad superior. Este proceso se repite hasta encontrar el elemento o determinar que no está presente en el arreglo. El tiempo de ejecución de la búsqueda binaria iterativa es \(O(\log n)\) en el peor caso, lo que la convierte en una opción significativamente más rápida que la búsqueda secuencial para arreglos grandes, siempre y cuando los datos estén ordenados previamente. La implementación de este algoritmo en el proyecto permite localizar deportistas únicamente por su ID, lo que requiere que el arreglo se encuentre ordenado según este campo antes de realizar la búsqueda. Sin embargo, para los tiempos de ejecución se midió su comportamiento sin contar el tiempo de ordenamiento previo, lo que permite evaluar su eficiencia exclusivamente en la fase de búsqueda.
 
 \section{Benchmarks, generación y visualización de resultados}
 \subsection{Diseño de benchmarks}
