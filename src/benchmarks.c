@@ -482,7 +482,7 @@ void run_sort_benchmark()
 
                 prepare_sort_case(work, n, benchmarkCase);
                 start = clock();
-                selection_sort(work, n, SORT_BY_ID, ASCENDING);
+                optimized_selection_sort(work, n, SORT_BY_ID, ASCENDING);
                 end = clock();
                 caseTotals[caseIndex][2] += (double)(end - start) / CLOCKS_PER_SEC;
                 free_deportistas_array(work, n);
