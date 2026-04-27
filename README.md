@@ -1,6 +1,6 @@
 # Algorithm Analyzer
 
-![C](https://img.shields.io/badge/C-C11-blue) ![Build](https://img.shields.io/badge/build-make-success) ![LaTeX](https://img.shields.io/badge/docs-LaTeX-9cf)
+![C](https://img.shields.io/badge/C-C11-blue) ![Build](https://img.shields.io/badge/build-make-success) ![LaTeX](https://img.shields.io/badge/docs-LaTeX-9cf) ![Doxygen](https://img.shields.io/badge/docs-Doxygen-blue) ![Gnuplot](https://img.shields.io/badge/plots-gnuplot-orange)
 
 Proyecto en C para generar datos de deportistas, ejecutar busquedas y ordenamientos sobre esos datos, y medir el tiempo de ejecucion de cada algoritmo mediante benchmarks. Hecho para la asignatura de Diseño de Algoritmos 2026/1.
 
